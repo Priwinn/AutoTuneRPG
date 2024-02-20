@@ -36,14 +36,18 @@ public struct DPSParam
 public class DPS : Entity
 {
     public readonly DPSParam dpsParam;
-    public DPS(DPSParam param) : base(param.maxHP, param.maxMana)
+    public DPS(DPSParam param, bool printMode= false) : base(param.maxHP, param.maxMana, printMode)
     {
         dpsParam = param;
     }
 
     public void BasicAttack(Entity target)
     {
-        target.Damage(dpsParam.basicDamage);
+        int damage = target.Damage(dpsParam.basicDamage);
+        if (printMode)
+        {
+            Debug.Log("DPS BasicAttack " + target + " for " + damage + " damage!");
+        }
     }
 
     private bool CheckCost(int cost)
@@ -63,19 +67,35 @@ public class DPS : Entity
     {
         if (!CheckCost(dpsParam.attackBuffCost))
         {
+            if (printMode)
+            {
+                Debug.Log("DPS atmpted to AOEAttackBuff but YOU HAVE NO MANA.");
+            }
             return;
         }
         mana -= dpsParam.attackBuffCost;
         party.AOEAttackBuff(dpsParam.attackBuff, dpsParam.attackBuffDuration);
+        if (printMode)
+        {
+            Debug.Log("DPS AOEAttackBuff " + dpsParam.attackBuff + " attack for " + dpsParam.attackBuffDuration + " turns using " + dpsParam.attackBuffCost + " mana.");
+        }
     }
 
     public void SingleDamage(Entity target)
     {
         if (!CheckCost(dpsParam.singleDamageCost))
         {
+            if (printMode)
+            {
+                Debug.Log("DPS atmpted to Single Damage but YOU HAVE NO MANA.");
+            }
             return;
         }
         mana -= dpsParam.singleDamageCost;
-        target.Damage(dpsParam.singleDamage + attackBuff - attackDebuff);
+        int damage = target.Damage(dpsParam.singleDamage + attackBuff - attackDebuff);
+        if (printMode)
+        {
+            Debug.Log("DPS Attack " + target + " for " + damage + " damage using " + dpsParam.singleDamageCost + " mana.");
+        }
     }
 }
