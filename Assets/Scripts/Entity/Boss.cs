@@ -24,7 +24,7 @@ public class Boss : Entity
 {
     public readonly BossParam bossParam;
 
-    public Boss(BossParam param): base(param.maxHP, 0)
+    public Boss(BossParam param, bool printMode=false): base(param.maxHP, 0, printMode)
     {
         bossParam = param;
     }
@@ -35,11 +35,20 @@ public class Boss : Entity
         {
             target = tauntTarget;
         }
-        target.Damage(bossParam.singleDamage + attackBuff - attackDebuff);
+        int damage = target.Damage(bossParam.singleDamage + attackBuff - attackDebuff);
+        if (printMode)
+        {
+            Debug.Log("Boss Attack " + target + " for " + damage + " damage!");
+        }
+
     }
 
     public void AoEAttack(Party party)
     {
         party.AOEDamage(bossParam.aoeDamage + attackBuff - attackDebuff);
+        if (printMode)
+        {
+            Debug.Log("Boss AoE Attack for " + bossParam.aoeDamage + " damage!");
+        }
     }
 }

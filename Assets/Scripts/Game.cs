@@ -7,7 +7,7 @@ public class Game
     public readonly GameParams gameParams;
     List<int[]> gameStatisticsHistory;
     public const int statisticsCount = 7;
-    bool debugMode;
+    bool printMode;
 
     Party playerParty;
     DPS dps;
@@ -17,10 +17,10 @@ public class Game
     Party bossParty;
     Boss boss;
 
-    public Game(GameParams gameParams, bool debugMode=false)
+    public Game(GameParams gameParams, bool printMode=false)
     {
         this.gameParams = gameParams;
-        this.debugMode = debugMode;
+        this.printMode = printMode;
         gameStatisticsHistory = new List<int[]>();
     }
 
@@ -31,16 +31,16 @@ public class Game
 
     private void InitGame()
     {
-        playerParty = new Party();
-        dps = new DPS(gameParams.dpsParam);
-        tank = new Tank(gameParams.tankParam);
-        healer = new Healer(gameParams.healerParam);
+        playerParty = new Party(printMode);
+        dps = new DPS(gameParams.dpsParam, printMode);
+        tank = new Tank(gameParams.tankParam, printMode);
+        healer = new Healer(gameParams.healerParam, printMode);
         playerParty.Add(new DPSAI(dps));
         playerParty.Add(new TankAI(tank));
         playerParty.Add(new HealerAI(healer));
 
-        bossParty = new Party();
-        boss = new Boss(gameParams.bossParam);
+        bossParty = new Party(printMode);
+        boss = new Boss(gameParams.bossParam, printMode);
         bossParty.Add(new BossAI(boss));
         bossParty.SetTargetParty(playerParty);
 
@@ -64,16 +64,34 @@ public class Game
         InitGame();
         while (playerParty.IsAlive() && bossParty.IsAlive())
         {
-            Debug.Log("Player turn");
+            if (printMode)
+            {
+                Debug.Log("Player turn");
+            }
             playerParty.Execute();
             playerParty.ResolveTurn();
+            if (printMode)
+            {
+                printGameState();
+            }
             if (!(playerParty.IsAlive() && bossParty.IsAlive()))
             {
                 break;
             }
-            Debug.Log("Boss turn");
+            if (printMode)
+            {
+                printGameState();
+            }
+            if (printMode)
+            {
+                Debug.Log("Boss turn");
+            }
             bossParty.Execute();
             bossParty.ResolveTurn();
+        }
+        if (!printMode)
+        {
+            return;
         }
         if (playerParty.IsAlive())
         {
@@ -86,6 +104,20 @@ public class Game
         else
         {
             Debug.Log("LAMO SPAGHETTI");
+        }
+    }
+
+    private void printGameState()
+    {
+        Debug.Log("Player Party:");
+        foreach (Entity entity in playerParty.membersEntity)
+        {
+            Debug.Log(entity.EntityStateString());
+        }
+        Debug.Log("Boss Party:");
+        foreach (Entity entity in bossParty.membersEntity)
+        {
+            Debug.Log(entity.EntityStateString());
         }
     }
 }

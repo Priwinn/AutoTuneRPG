@@ -236,4 +236,27 @@ public abstract class Entity
             }
         }
     }
+
+    public virtual string EntityStateString()
+    {
+        string hpMana = this + " HP:" + HP + "/" + maxHP + " Mana:" + mana + "/" + maxMana;
+        string buffDebuff = "";
+        if (attackBuff > 0)
+        {
+            buffDebuff += "AttackBuff:" + attackBuff + " ";
+        }
+        if (attackDebuff > 0)
+        {
+            buffDebuff += "AttackDebuff:" + attackDebuff + " ";
+        }
+        if (defenseBuff > 0)
+        {
+            buffDebuff += "DefenseBuff:" + defenseBuff + " ";
+        }
+        if (defenseDebuff > 0)
+        {
+            buffDebuff += "DefenseDebuff:" + defenseDebuff + " ";
+        }
+        return hpMana + " || " + buffDebuff;
+    }
 }

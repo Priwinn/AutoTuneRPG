@@ -38,14 +38,18 @@ public class Tank : Entity
 {
     TankParam tankParam;
 
-    public Tank(TankParam param): base(param.maxHP, param.maxMana)
+    public Tank(TankParam param, bool printMode = false) : base(param.maxHP, param.maxMana, printMode)
     {
         tankParam = param;
     }
 
     public void BasicAttack(Entity target)
     {
-        target.Damage(tankParam.basicDamage);
+        int damage = target.Damage(tankParam.basicDamage);
+        if (printMode)
+        {
+            Debug.Log("Tank BasicAttack " + target + " for " + damage + " damage!");
+        }
     }
 
     private bool CheckCost(int cost)
@@ -65,21 +69,38 @@ public class Tank : Entity
     {
         if(!CheckCost(tankParam.tauntCost))
         {
+            if (printMode)
+            {
+                Debug.Log("Tank atmpted to Taunt" + target + " but YOU HAVE NO MANA.");
+            }
             return;
         }
         mana -= tankParam.tauntCost;
         target.Taunted(this, tankParam.tauntDuration);
         target.DebuffAttack(tankParam.tauntAttackDebuff, tankParam.tauntDuration);
+        if (printMode)
+        {
+            Debug.Log("Tank Taunted and debuff " + tankParam.tauntAttackDebuff + " attack " + target + " for " + tankParam.tauntDuration + "turns using " + tankParam.tauntCost + " mana.");
+        }
     }
 
     public void SingleAttackAndHeal(Entity target)
     {
         if (!CheckCost(tankParam.singleCost))
         {
+            if (printMode)
+            {
+                Debug.Log("Tank atmpted to Attack " + target + " and Heal but YOU HAVE NO MANA.");
+            }
             return;
         }
         mana -= tankParam.singleCost;
-        target.Damage(tankParam.singleDamage + attackBuff - attackDebuff);
-        this.Heal(tankParam.singleHeal);
+        int damage = target.Damage(tankParam.singleDamage + attackBuff - attackDebuff);
+        int heal = this.Heal(tankParam.singleHeal);
+
+        if (printMode)
+        {
+            Debug.Log("Tank Attack " + target + " for " + damage + " damage and heal for " + heal + " HP using " + tankParam.tauntCost + " mana.");
+        }
     }
 }

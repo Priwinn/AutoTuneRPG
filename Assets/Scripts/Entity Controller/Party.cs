@@ -9,13 +9,18 @@ public class Party
     public readonly List<Entity> graveyardEntity;
     public readonly List<EntityController> graveyardController;
 
-    public Party()
+    private bool printMode;
+
+
+    public Party(bool printMode=false)
     {
         membersEntity = new List<Entity>();
         graveyardEntity = new List<Entity>();
 
         membersController = new List<EntityController>();
         graveyardController = new List<EntityController>();
+
+        this.printMode = printMode;
     }
 
     public void Add(EntityController controller)
@@ -39,13 +44,15 @@ public class Party
         {
             if (membersEntity[i].GetHP() <= 0)
             {
-                Debug.Log(membersEntity[i]);
+                if (printMode)
+                {
+                    Debug.Log(membersEntity[i] + " FUCKING DIED!!");
+                }
                 graveyardEntity.Add(membersEntity[i]);
                 graveyardController.Add(membersController[i]);
                 membersEntity.RemoveAt(i);
                 membersController.RemoveAt(i);
                 i--;
-                Debug.Log("SOMONE FUCKING DIE");
             }
             else
             {
