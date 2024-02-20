@@ -45,7 +45,7 @@ public class Tank : Entity
 
     public void BasicAttack(Entity target)
     {
-        int damage = target.Damage(tankParam.basicDamage);
+        int damage = target.Damage(tankParam.basicDamage + attackBuff - attackBuff);
         if (printMode)
         {
             Debug.Log("Tank BasicAttack " + target + " for " + damage + " damage!");
