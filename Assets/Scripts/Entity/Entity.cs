@@ -57,9 +57,16 @@ public abstract class Entity
         return HP;
     }
 
+    /*
     public float GetPercentHP()
     {
         return (float)HP / (float)maxHP;
+    }
+    */
+
+    public int GetPercentHP()
+    {
+        return (int)(((float)HP / (float)maxHP) * 100);
     }
     
     public int GetMaxHP()
