@@ -6,7 +6,7 @@ public class Game
 {
     public readonly GameParams gameParams;
     List<int[]> gameStatisticsHistory;
-    public const int statisticsCount = 7;
+    public const int statisticsCount = 8;
     bool printMode;
 
     Party playerParty;
@@ -53,17 +53,20 @@ public class Game
     {
         for (int i = 0; i < count; i++)
         {
-            StartGame();
-            int[] gameStatistics = { dps.GetPercentHP(), dps.GetMana(), tank.GetPercentHP(), tank.GetMana(), healer.GetPercentHP(), healer.GetMana(), boss.GetPercentHP() };
+            int turn_count = StartGame();
+            int[] gameStatistics = { dps.GetPercentHP(), dps.GetMana(), tank.GetPercentHP(), tank.GetMana(), healer.GetPercentHP(), healer.GetMana(), boss.GetPercentHP(), turn_count };
             gameStatisticsHistory.Add(gameStatistics);
         }
     }
 
-    private void StartGame()
+    // Return turn count
+    private int StartGame()
     {
         InitGame();
+        int turn_count = 0;
         while (playerParty.IsAlive() && bossParty.IsAlive())
         {
+            turn_count++;
             if (printMode)
             {
                 Debug.Log("Player turn");
@@ -91,7 +94,7 @@ public class Game
         }
         if (!printMode)
         {
-            return;
+            return turn_count;
         }
         if (playerParty.IsAlive())
         {
@@ -105,6 +108,7 @@ public class Game
         {
             Debug.Log("LAMO SPAGHETTI");
         }
+        return turn_count;
     }
 
     private void printGameState()
