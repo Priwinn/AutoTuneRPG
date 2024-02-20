@@ -29,7 +29,7 @@ public class BossAI : EntityController
 
     public override void Execute()
     {
-        if (Random.Range(0f, 1f) <= ((Boss)entity).bossParam.aoeProbability)
+        if (Random.Range(0, 100) <= ((Boss)entity).bossParam.aoeProbability)
         {
             ((Boss)entity).AoEAttack(targetParty);
         }
