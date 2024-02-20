@@ -234,6 +234,11 @@ public abstract class Entity
             {
                 isTaunted = false;
             }
+            else if (tauntTarget.GetHP() <= 0)
+            {
+                isTaunted = false;
+                tauntDuration = 0;
+            }
         }
     }
 
