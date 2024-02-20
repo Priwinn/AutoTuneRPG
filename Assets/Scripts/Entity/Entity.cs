@@ -4,6 +4,7 @@ using UnityEngine;
 
 public abstract class Entity
 {
+    protected bool printMode = false;
     protected Entity defaultTarget;
     protected Entity tauntTarget;
 
@@ -26,10 +27,11 @@ public abstract class Entity
     protected bool isTaunted = false;
     protected int tauntDuration = 0;
 
-    public Entity(int initHP, int initMana)
+    public Entity(int maxHP, int maxMana, bool printMode=false)
     {
-        maxHP = initHP; HP = maxHP;
-        maxMana = initMana; mana = maxMana;
+        this.maxHP = maxHP; HP = maxHP;
+        this.maxMana = maxMana; mana = maxMana;
+        this.printMode = printMode;
     }
 
     public Entity GetDefaultTarget()
@@ -66,7 +68,7 @@ public abstract class Entity
 
     public int GetPercentHP()
     {
-        return (int)(((float)HP / (float)maxHP) * 100);
+        return Mathf.Max((int)(((float)HP / (float)maxHP) * 100), 0);
     }
     
     public int GetMaxHP()
