@@ -45,7 +45,7 @@ public class Tank : Entity
 
     public void BasicAttack(Entity target)
     {
-        int damage = target.Damage(tankParam.basicDamage);
+        int damage = target.Damage(tankParam.basicDamage + attackBuff - attackBuff);
         if (printMode)
         {
             Debug.Log("Tank BasicAttack " + target + " for " + damage + " damage!");
@@ -80,7 +80,7 @@ public class Tank : Entity
         target.DebuffAttack(tankParam.tauntAttackDebuff, tankParam.tauntDuration);
         if (printMode)
         {
-            Debug.Log("Tank Taunted and debuff " + tankParam.tauntAttackDebuff + " attack " + target + " for " + tankParam.tauntDuration + "turns using " + tankParam.tauntCost + " mana.");
+            Debug.Log("Tank Taunted and debuff " + tankParam.tauntAttackDebuff + " attack " + target + " for " + tankParam.tauntDuration + " turns using " + tankParam.tauntCost + " mana.");
         }
     }
 

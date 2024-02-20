@@ -43,7 +43,7 @@ public class DPS : Entity
 
     public void BasicAttack(Entity target)
     {
-        int damage = target.Damage(dpsParam.basicDamage);
+        int damage = target.Damage(dpsParam.basicDamage + attackBuff - attackDebuff);
         if (printMode)
         {
             Debug.Log("DPS BasicAttack " + target + " for " + damage + " damage!");
