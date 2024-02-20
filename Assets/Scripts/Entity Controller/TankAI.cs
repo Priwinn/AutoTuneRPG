@@ -10,7 +10,6 @@ public class TankAI : EntityController
     public TankAI(Tank tank)
     {
         entity = tank;
-        Debug.Log(entity);
     }
 
     public override void Execute()
