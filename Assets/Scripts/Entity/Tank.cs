@@ -80,7 +80,7 @@ public class Tank : Entity
         target.DebuffAttack(tankParam.tauntAttackDebuff, tankParam.tauntDuration);
         if (printMode)
         {
-            Debug.Log("Tank Taunted and debuff " + tankParam.tauntAttackDebuff + " attack " + target + " for " + tankParam.tauntDuration + "turns using " + tankParam.tauntCost + " mana.");
+            Debug.Log("Tank Taunted and debuff " + tankParam.tauntAttackDebuff + " attack " + target + " for " + tankParam.tauntDuration + " turns using " + tankParam.tauntCost + " mana.");
         }
     }
 
