@@ -18,6 +18,13 @@ public class Evolution : MonoBehaviour
     public float mutationRate = 0.01f;
     public int crossover_type=0; //0 for uniform crossover, 1 for n point crossover
     public int selection_type=0; //0 for roulette wheel selection, >0 for tournament selection
+    public int PlayerLoseWeight=1;
+    public int PlayerDeathWeight=1;
+    public int HPManaWeight=1;
+    public int RoundWeight=1;
+    public int targetRounds=15;
+    public int baseFitness=10000;
+
 
     [Header("DPS Settings")]
     public int DPS_maxHP_min=1;
@@ -85,7 +92,7 @@ public class Evolution : MonoBehaviour
                                                         "Tank_maxHP", "Tank_tauntAttackDebuff", "Tank_tauntDuration", "Tank_tauntCost", "Tank_singleDamage", "Tank_singleHeal", "Tank_singleCost", "Tank_basicDamage",
                                                         "Healer_maxHP", "Healer_singleHeal", "Healer_singleHealCost", "Healer_aoeHeal", "Healer_aoeHealCost", "Healer_basicDamage",
                                                         "Boss_maxHP", "Boss_singleDamage", "Boss_aoeDamage", "Boss_aoeProbability" };    private List<int[]> population; // Old population
-    private List<int> fitPopulation; // Old population fitness scores
+    private List<float> fitPopulation; // Old population fitness scores
     private int generationFitness; // Total fitness for old population
     private int[] elite; // The max fitness individual in old generation
 
@@ -96,7 +103,7 @@ public class Evolution : MonoBehaviour
         GameParams Params = new GameParams(individual);
         Game game = new Game(Params,true);
         game.Run(1);
-        List<int[]> stats = game.GetStatistics();
+        List<float[]> stats = game.GetStatistics();
         Debug.Log("Stats: " + string.Join(", ", stats[0]));
     }
 
@@ -168,7 +175,7 @@ public class Evolution : MonoBehaviour
         InitializePopulation();
         UpdateRanges();
         EvaluateFitness();
-        int bestFitness = 0;
+        float bestFitness = 0f;
         for (int generation = 0; generation < numGenerations; generation++)
         {
             // Create a new population
@@ -185,8 +192,6 @@ public class Evolution : MonoBehaviour
                 // Select parents for crossover
                 int[] parent1 = SelectParent();
                 int[] parent2 = SelectParent();
-                Debug.Log("Parent 1: " + string.Join(", ", parent1));
-                Debug.Log("Parent 2: " + string.Join(", ", parent2));
 
                 // Perform crossover to create a child
                 int[] childDNA = Crossover(parent1, parent2);
@@ -206,6 +211,7 @@ public class Evolution : MonoBehaviour
 
         }
         Debug.Log("Evolution complete");
+        PlayGame(elite);
         Debug.Log("Best individual: " + bestFitness);
         string paramString = "Elite: ";
         for (int i = 0; i < ParamNames.Length; i++)
@@ -213,26 +219,26 @@ public class Evolution : MonoBehaviour
             paramString += ParamNames[i] + ": " + elite[i] + ", ";
         }
         Debug.Log(paramString);
-        PlayGame(elite);
+        
         // SaveIndividual(elite,"Assets/Scripts/Entity/EliteParam.json");
         // elite=LoadIndividual("Assets/Scripts/Entity/EliteParam.json");
         // Debug.Log("Loaded Elite: " + string.Join(", ", elite));
     }
 
     // Evaluate the fitness of each individual
-    int EvaluateFitness()
+    float EvaluateFitness()
     {
-        int bestFitness = 0;
-        fitPopulation = new List<int>(populationSize);
+        float bestFitness = 0f;
+        fitPopulation = new List<float>(populationSize);
         foreach (int[] individual in population)
         {
             GameParams Params = new GameParams(individual);
-            Game game = new Game(Params, true);
-            game.Run(1);
-            List<int[]> stats = game.GetStatistics();
-            int fitness = FitnessFunction(stats);
+            Game game = new Game(Params);
+            game.Run(10);
+            List<float[]> stats = game.GetStatistics();
+            float fitness = FitnessFunction(stats);
             fitPopulation.Add(fitness);
-            if (fitness > bestFitness)
+            if (fitness >= bestFitness)
             {
                 bestFitness = fitness;
                 elite = individual;
@@ -241,17 +247,47 @@ public class Evolution : MonoBehaviour
         return bestFitness;
     }
 
-    int FitnessFunction(List<int[]> stats)
+    float FitnessFunction(List<float[]> stats)
     {
         //TODO define fitness function
         //Use sum of all params as fitness
-        int fitness = 0;
-
-        for (int i = 0; i < stats[0].Length; i++)
+        float fitness = 0f;
+        
+        for (int i = 0; i < stats.Count; i++)
         {
-            fitness += 100-stats[0][i];
+            float hpManaFitness = 0;
+            for (int j = 0; j < stats[i].Length-1; j+=2)
+            {
+                hpManaFitness += 1-stats[i][j];               
+            }
+            hpManaFitness = hpManaFitness / 4;
+            //Death penalty
+            float deathPenalty = 0;
+            if (stats[i][0] == 0)
+            {
+                deathPenalty -= PlayerDeathWeight;
+            }
+            if (stats[i][2] == 0)
+            {
+                deathPenalty -= PlayerDeathWeight;
+            }
+            if (stats[i][4] == 0)
+            {
+                deathPenalty -= PlayerDeathWeight;
+            }
+            //Lose weight penalty
+            float losePenalty = 0;
+            if (stats[i][6] != 0)
+            {
+                losePenalty =  -PlayerLoseWeight;
+            }
+            //Round penalty as squared difference from target rounds
+            float roundPenalty = -Mathf.Pow(stats[i][7]-targetRounds,2);
+
+            fitness += baseFitness + hpManaFitness*HPManaWeight + losePenalty + roundPenalty*RoundWeight + deathPenalty;
         }
-        return fitness;
+        fitness = fitness / stats.Count;
+        return Mathf.Max(fitness, 0);
     }
 
     // Select a parent for crossover
@@ -273,7 +309,6 @@ public class Evolution : MonoBehaviour
     int[] RouletteSelection()
     {
         float totalFitness = 0f;
-
         for (int individual = 0; individual < populationSize; individual++)
         {
             totalFitness += fitPopulation[individual];
@@ -297,12 +332,12 @@ public class Evolution : MonoBehaviour
     int[] TournamentSelection(int k)
     {
         int best=0;
-        int bestFitness=0;
+        float bestFitness=0;
         for (int i = 0; i < k; i++)
         {
             
             int index = Random.Range(0, populationSize);
-            int fitness = fitPopulation[index];
+            float fitness = fitPopulation[index];
             if (fitness>bestFitness)
             {
                 best=index;
