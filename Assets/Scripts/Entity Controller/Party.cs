@@ -34,7 +34,14 @@ public class Party
     {
         foreach (EntityController controller in membersController)
         {
-            controller.Execute();
+            if (controller.GetEntity().GetHP() <= 0)
+            {
+                continue;
+            }
+            else
+            {
+                controller.Execute();
+            }
         }
     }
 
