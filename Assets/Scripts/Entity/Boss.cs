@@ -33,7 +33,15 @@ public class Boss : Entity
     {
         if (isTaunted)
         {
-            target = tauntTarget;
+            if (target.GetHP() <= 0)
+            {
+                isTaunted = false;
+                tauntDuration = 0;
+            }
+            else
+            {
+                target = tauntTarget;
+            }
         }
         int damage = target.Damage(bossParam.singleDamage + attackBuff - attackDebuff);
         if (printMode)
