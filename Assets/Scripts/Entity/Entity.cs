@@ -61,7 +61,7 @@ public abstract class Entity
 
     public float GetHPPercentage()
     {
-        return (float)HP / (float)maxHP;
+        return Mathf.Max((float)HP / (float)maxHP, 0);
     }
 
     /*
