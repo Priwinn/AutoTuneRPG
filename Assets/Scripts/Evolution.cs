@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Array = System.Array;
+using System.Threading;
+
 
 
 public class Evolution : MonoBehaviour
@@ -18,100 +20,117 @@ public class Evolution : MonoBehaviour
     public int selection_type=0; //0 for roulette wheel selection, >0 for tournament selection
 
     [Header("DPS Settings")]
-    public int DPS_BA_min=1;
-    public int DPS_BA_max=10;
-    public int DPS_BuffAmount_min=1;
-    public int DPS_BuffAmount_max=10;
-    public int DPS_BuffTurns_min=1;
-    public int DPS_BuffTurns_max=10;
-    public int DPS_BuffMana_min=1;
-    public int DPS_BuffMana_max=10;
-    public int DPS_SpecialAttack_min=1;
-    public int DPS_SpecialAttack_max=10;
-    public int DPS_SpecialAttackMana_min=1;
-    public int DPS_SpecialAttackMana_max=10;
-    public int DPS_Health_min=1;
-    public int DPS_Health_max=10;
-
-    [Header("Healer Settings")]
-    public int Healer_BA_min=1;
-    public int Healer_BA_max=10;
-    public int Healer_SingleHeal_min=1;
-    public int Healer_SingleHeal_max=10;
-    public int Healer_AOEHeal_min=1;
-    public int Healer_AOEHeal_max=10;
-    public int Healer_SingleHealMana_min=1;
-    public int Healer_SingleHealMana_max=10;
-    public int Healer_AOEHealMana_min=1;
-    public int Healer_AOEHealMana_max=10;
-    public int Healer_Health_min=1;
-    public int Healer_Health_max=10;
+    public int DPS_maxHP_min=1;
+    public int DPS_maxHP_max=10;
+    public int DPS_attackBuff_min=1;
+    public int DPS_attackBuff_max=10;
+    public int DPS_attackBuffDuration_min=1;
+    public int DPS_attackBuffDuration_max=10;
+    public int DPS_attackBuffCost_min=1;
+    public int DPS_attackBuffCost_max=10;
+    public int DPS_singleDamage_min=1;
+    public int DPS_singleDamage_max=10;
+    public int DPS_singleDamageCost_min=1;
+    public int DPS_singleDamageCost_max=10;
+    public int DPS_basicDamage_min=1;
+    public int DPS_basicDamage_max=10;
 
     [Header("Tank Settings")]
-    public int Tank_BA_min=1;
-    public int Tank_BA_max=10;
-    public int Tank_TauntDMGReduction_min=1;
-    public int Tank_TauntDMGReduction_max=10;
-    public int Tank_TauntDuration_min=1;
-    public int Tank_TauntDuration_max=10;
-    public int Tank_TauntMana_min=1;
-    public int Tank_TauntMana_max=10;
-    public int Tank_SpecialDMG_min=1;
-    public int Tank_SpecialDMG_max=10;
-    public int Tank_SpecialHeal_min=1;
-    public int Tank_SpecialHeal_max=10;
-    public int Tank_SpecialMana_min=1;
-    public int Tank_SpecialMana_max=10;
-    public int Tank_Health_min=1;
-    public int Tank_Health_max=10;
+    public int Tank_maxHP_min=1;
+    public int Tank_maxHP_max=10;
+    public int Tank_tauntAttackDebuff_min=1;
+    public int Tank_tauntAttackDebuff_max=10;
+    public int Tank_tauntDuration_min=1;
+    public int Tank_tauntDuration_max=10;
+    public int Tank_tauntCost_min=1;
+    public int Tank_tauntCost_max=10;
+    public int Tank_singleDamage_min=1;
+    public int Tank_singleDamage_max=10;
+    public int Tank_singleHeal_min=1;
+    public int Tank_singleHeal_max=10;
+    public int Tank_singleCost_min=1;
+    public int Tank_singleCost_max=10;
+    public int Tank_basicDamage_min=1;
+    public int Tank_basicDamage_max=10;
+
+    [Header("Healer Settings")]
+    public int Healer_maxHP_min=1;
+    public int Healer_maxHP_max=10;
+    public int Healer_singleHeal_min=1;
+    public int Healer_singleHeal_max=10;
+    public int Healer_singleHealCost_min=1;
+    public int Healer_singleHealCost_max=10;
+    public int Healer_aoeHeal_min=1;
+    public int Healer_aoeHeal_max=10;
+    public int Healer_aoeHealCost_min=1;
+    public int Healer_aoeHealCost_max=10;
+    public int Healer_basicDamage_min=1;
+    public int Healer_basicDamage_max=10;
 
     [Header("Boss Settings")]
-    public int Boss_Single_min=1;
-    public int Boss_Single_max=10;
-    public int Boss_AOE_min=1;
-    public int Boss_AOE_max=10;
-    public int Boss_SingleProb_min=1;
-    public int Boss_SingleProb_max=10;
+    public int Boss_maxHP_min=1;
+    public int Boss_maxHP_max=10;
+    public int Boss_singleDamage_min=1;
+    public int Boss_singleDamage_max=10;
+    public int Boss_aoeDamage_min=1;
+    public int Boss_aoeDamage_max=10;
+    public int Boss_aoeProbability_min=1;
+    public int Boss_aoeProbability_max=10;
     
     private int[] ParamMins;
     private int[] ParamMaxs;
+    private JsonIO jsonIO = new JsonIO();
 
-    private string[] ParamNames = new string[] {"DPS_BA", "DPS_BuffAmount", "DPS_BuffTurns", "DPS_BuffMana", "DPS_SpecialAttack", "DPS_SpecialAttackMana", "DPS_Health", "Healer_BA", "Healer_SingleHeal", "Healer_AOEHeal", "Healer_SingleHealMana", "Healer_AOEHealMana", "Healer_Health", "Tank_BA", "Tank_TauntDMGReduction", "Tank_TauntDuration", "Tank_TauntMana", "Tank_SpecialDMG", "Tank_SpecialHeal", "Tank_SpecialMana", "Tank_Health", "Boss_Single", "Boss_AOE", "Boss_SingleProb"};
-    private List<int[]> population; // Old population
+    private string[] ParamNames = new string[] { "DPS_maxHP", "DPS_attackBuff", "DPS_attackBuffDuration", "DPS_attackBuffCost", "DPS_singleDamage", "DPS_singleDamageCost", "DPS_basicDamage",
+                                                        "Tank_maxHP", "Tank_tauntAttackDebuff", "Tank_tauntDuration", "Tank_tauntCost", "Tank_singleDamage", "Tank_singleHeal", "Tank_singleCost", "Tank_basicDamage",
+                                                        "Healer_maxHP", "Healer_singleHeal", "Healer_singleHealCost", "Healer_aoeHeal", "Healer_aoeHealCost", "Healer_basicDamage",
+                                                        "Boss_maxHP", "Boss_singleDamage", "Boss_aoeDamage", "Boss_aoeProbability" };    private List<int[]> population; // Old population
     private List<int> fitPopulation; // Old population fitness scores
     private int generationFitness; // Total fitness for old population
     private int[] elite; // The max fitness individual in old generation
 
-    
+    //Play one game
+    public void PlayGame()
+    {
+        int[] individual = GenerateIndividual();
+        Debug.Log("Individual: " + string.Join(", ", individual));
+        GameParams Params = new GameParams(individual);
+        Game game = new Game(Params);
+        game.Run(1);
+        List<int[]> stats = game.GetStatistics();
+        Debug.Log("Stats: " + string.Join(", ", stats[0]));
+    }
+
     // Generate random individuals within the parameter ranges
     public int[] GenerateIndividual()
     {
-        int[] individual = new int[24];
+        int[] individual = new int[25];
 
-        individual[0] = Random.Range(DPS_BA_min, DPS_BA_max + 1);
-        individual[1] = Random.Range(DPS_BuffAmount_min, DPS_BuffAmount_max + 1);
-        individual[2] = Random.Range(DPS_BuffTurns_min, DPS_BuffTurns_max + 1);
-        individual[3] = Random.Range(DPS_BuffMana_min, DPS_BuffMana_max + 1);
-        individual[4] = Random.Range(DPS_SpecialAttack_min, DPS_SpecialAttack_max + 1);
-        individual[5] = Random.Range(DPS_SpecialAttackMana_min, DPS_SpecialAttackMana_max + 1);
-        individual[6] = Random.Range(DPS_Health_min, DPS_Health_max + 1);
-        individual[7] = Random.Range(Healer_BA_min, Healer_BA_max + 1);
-        individual[8] = Random.Range(Healer_SingleHeal_min, Healer_SingleHeal_max + 1);
-        individual[9] = Random.Range(Healer_AOEHeal_min, Healer_AOEHeal_max + 1);
-        individual[10] = Random.Range(Healer_SingleHealMana_min, Healer_SingleHealMana_max + 1);
-        individual[11] = Random.Range(Healer_AOEHealMana_min, Healer_AOEHealMana_max + 1);
-        individual[12] = Random.Range(Healer_Health_min, Healer_Health_max + 1);
-        individual[13] = Random.Range(Tank_BA_min, Tank_BA_max + 1);
-        individual[14] = Random.Range(Tank_TauntDMGReduction_min, Tank_TauntDMGReduction_max + 1);
-        individual[15] = Random.Range(Tank_TauntDuration_min, Tank_TauntDuration_max + 1);
-        individual[16] = Random.Range(Tank_TauntMana_min, Tank_TauntMana_max + 1);
-        individual[17] = Random.Range(Tank_SpecialDMG_min, Tank_SpecialDMG_max + 1);
-        individual[18] = Random.Range(Tank_SpecialHeal_min, Tank_SpecialHeal_max + 1);
-        individual[19] = Random.Range(Tank_SpecialMana_min, Tank_SpecialMana_max + 1);
-        individual[20] = Random.Range(Tank_Health_min, Tank_Health_max + 1);
-        individual[21] = Random.Range(Boss_Single_min, Boss_Single_max + 1);
-        individual[22] = Random.Range(Boss_AOE_min, Boss_AOE_max + 1);
-        individual[23] = Random.Range(Boss_SingleProb_min, Boss_SingleProb_max + 1);
+        individual[0] = Random.Range(DPS_maxHP_min, DPS_maxHP_max + 1);
+        individual[1] = Random.Range(DPS_attackBuff_min, DPS_attackBuff_max + 1);
+        individual[2] = Random.Range(DPS_attackBuffDuration_min, DPS_attackBuffDuration_max + 1);
+        individual[3] = Random.Range(DPS_attackBuffCost_min, DPS_attackBuffCost_max + 1);
+        individual[4] = Random.Range(DPS_singleDamage_min, DPS_singleDamage_max + 1);
+        individual[5] = Random.Range(DPS_singleDamageCost_min, DPS_singleDamageCost_max + 1);
+        individual[6] = Random.Range(DPS_basicDamage_min, DPS_basicDamage_max + 1);
+        individual[7] = Random.Range(Tank_maxHP_min, Tank_maxHP_max + 1);
+        individual[8] = Random.Range(Tank_tauntAttackDebuff_min, Tank_tauntAttackDebuff_max + 1);
+        individual[9] = Random.Range(Tank_tauntDuration_min, Tank_tauntDuration_max + 1);
+        individual[10] = Random.Range(Tank_tauntCost_min, Tank_tauntCost_max + 1);
+        individual[11] = Random.Range(Tank_singleDamage_min, Tank_singleDamage_max + 1);
+        individual[12] = Random.Range(Tank_singleHeal_min, Tank_singleHeal_max + 1);
+        individual[13] = Random.Range(Tank_singleCost_min, Tank_singleCost_max + 1);
+        individual[14] = Random.Range(Tank_basicDamage_min, Tank_basicDamage_max + 1);
+        individual[15] = Random.Range(Healer_maxHP_min, Healer_maxHP_max + 1);
+        individual[16] = Random.Range(Healer_singleHeal_min, Healer_singleHeal_max + 1);
+        individual[17] = Random.Range(Healer_singleHealCost_min, Healer_singleHealCost_max + 1);
+        individual[18] = Random.Range(Healer_aoeHeal_min, Healer_aoeHeal_max + 1);
+        individual[19] = Random.Range(Healer_aoeHealCost_min, Healer_aoeHealCost_max + 1);
+        individual[20] = Random.Range(Healer_basicDamage_min, Healer_basicDamage_max + 1);
+        individual[21] = Random.Range(Boss_maxHP_min, Boss_maxHP_max + 1);
+        individual[22] = Random.Range(Boss_singleDamage_min, Boss_singleDamage_max + 1);
+        individual[23] = Random.Range(Boss_aoeDamage_min, Boss_aoeDamage_max + 1);
+        individual[24] = Random.Range(Boss_aoeProbability_min, Boss_aoeProbability_max + 1);
 
         return individual;
     }
@@ -125,6 +144,7 @@ public class Evolution : MonoBehaviour
         {
             // Instantiate a new individual and set the individual's DNA randomly
             int[] individual = GenerateIndividual();
+            
             // 
             // Add the individual to the population
             population.Add(individual);
@@ -133,8 +153,14 @@ public class Evolution : MonoBehaviour
 
     public void UpdateRanges()
     {
-        ParamMins = new int[] {DPS_BA_min, DPS_BuffAmount_min, DPS_BuffTurns_min, DPS_BuffMana_min, DPS_SpecialAttack_min, DPS_SpecialAttackMana_min, DPS_Health_min, Healer_BA_min, Healer_SingleHeal_min, Healer_AOEHeal_min, Healer_SingleHealMana_min, Healer_AOEHealMana_min, Healer_Health_min, Tank_BA_min, Tank_TauntDMGReduction_min, Tank_TauntDuration_min, Tank_TauntMana_min, Tank_SpecialDMG_min, Tank_SpecialHeal_min, Tank_SpecialMana_min, Tank_Health_min, Boss_Single_min, Boss_AOE_min, Boss_SingleProb_min};
-        ParamMaxs = new int[] {DPS_BA_max, DPS_BuffAmount_max, DPS_BuffTurns_max, DPS_BuffMana_max, DPS_SpecialAttack_max, DPS_SpecialAttackMana_max, DPS_Health_max, Healer_BA_max, Healer_SingleHeal_max, Healer_AOEHeal_max, Healer_SingleHealMana_max, Healer_AOEHealMana_max, Healer_Health_max, Tank_BA_max, Tank_TauntDMGReduction_max, Tank_TauntDuration_max, Tank_TauntMana_max, Tank_SpecialDMG_max, Tank_SpecialHeal_max, Tank_SpecialMana_max, Tank_Health_max, Boss_Single_max, Boss_AOE_max, Boss_SingleProb_max};
+        ParamMins = new int[] { DPS_maxHP_min, DPS_attackBuff_min, DPS_attackBuffDuration_min, DPS_attackBuffCost_min, DPS_singleDamage_min, DPS_singleDamageCost_min, DPS_basicDamage_min,
+                                Tank_maxHP_min, Tank_tauntAttackDebuff_min, Tank_tauntDuration_min, Tank_tauntCost_min, Tank_singleDamage_min, Tank_singleHeal_min, Tank_singleCost_min, Tank_basicDamage_min,
+                                Healer_maxHP_min, Healer_singleHeal_min, Healer_singleHealCost_min, Healer_aoeHeal_min, Healer_aoeHealCost_min, Healer_basicDamage_min,
+                                Boss_maxHP_min, Boss_singleDamage_min, Boss_aoeDamage_min, Boss_aoeProbability_min };
+        ParamMaxs = new int[] { DPS_maxHP_max, DPS_attackBuff_max, DPS_attackBuffDuration_max, DPS_attackBuffCost_max, DPS_singleDamage_max, DPS_singleDamageCost_max, DPS_basicDamage_max,
+                                Tank_maxHP_max, Tank_tauntAttackDebuff_max, Tank_tauntDuration_max, Tank_tauntCost_max, Tank_singleDamage_max, Tank_singleHeal_max, Tank_singleCost_max, Tank_basicDamage_max,
+                                Healer_maxHP_max, Healer_singleHeal_max, Healer_singleHealCost_max, Healer_aoeHeal_max, Healer_aoeHealCost_max, Healer_basicDamage_max,
+                                Boss_maxHP_max, Boss_singleDamage_max, Boss_aoeDamage_max, Boss_aoeProbability_max };
     }
 
     // Evolution process
@@ -160,6 +186,8 @@ public class Evolution : MonoBehaviour
                 // Select parents for crossover
                 int[] parent1 = SelectParent();
                 int[] parent2 = SelectParent();
+                Debug.Log("Parent 1: " + string.Join(", ", parent1));
+                Debug.Log("Parent 2: " + string.Join(", ", parent2));
 
                 // Perform crossover to create a child
                 int[] childDNA = Crossover(parent1, parent2);
@@ -181,6 +209,9 @@ public class Evolution : MonoBehaviour
         Debug.Log("Evolution complete");
         Debug.Log("Best individual: " + bestFitness);
         Debug.Log("Elite: " + string.Join(", ", elite));
+        // SaveIndividual(elite,"Assets/Scripts/Entity/EliteParam.json");
+        // elite=LoadIndividual("Assets/Scripts/Entity/EliteParam.json");
+        // Debug.Log("Loaded Elite: " + string.Join(", ", elite));
     }
 
     // Evaluate the fitness of each individual
@@ -190,7 +221,11 @@ public class Evolution : MonoBehaviour
         fitPopulation = new List<int>(populationSize);
         foreach (int[] individual in population)
         {
-            int fitness = FitnessFunction(individual);
+            GameParams Params = new GameParams(individual);
+            Game game = new Game(Params);
+            game.Run(1);
+            List<int[]> stats = game.GetStatistics();
+            int fitness = FitnessFunction(stats);
             fitPopulation.Add(fitness);
             if (fitness > bestFitness)
             {
@@ -201,20 +236,21 @@ public class Evolution : MonoBehaviour
         return bestFitness;
     }
 
-    int FitnessFunction(int[] individual)
+    int FitnessFunction(List<int[]> stats)
     {
         //TODO define fitness function
         //Use sum of all params as fitness
         int fitness = 0;
-        for (int i = 0; i < ParamNames.Length; i++)
+
+        for (int i = 0; i < stats[0].Length; i++)
         {
-            fitness += individual[i];
+            fitness += 100-stats[0][i];
         }
         return fitness;
     }
 
     // Select a parent for crossover
-    int[] SelectParent(int type=0)
+    int[] SelectParent()
     {
         // Select a parent based on the selection type
         // 0 for roulette wheel selection
@@ -225,7 +261,7 @@ public class Evolution : MonoBehaviour
             return RouletteSelection();
         } else
         {
-            return TournamentSelection(type);
+            return TournamentSelection(selection_type);
         }
     }
     // Roulette wheel selection
@@ -348,5 +384,13 @@ public class Evolution : MonoBehaviour
             }
         }
         return genotype;
+    }
+    public void SaveIndividual(int[] individual, string path)
+    {
+        jsonIO.SaveParam(individual, path);
+    }
+    public int[] LoadIndividual(string path)
+    {
+        return jsonIO.LoadParam(path);
     }
 }
