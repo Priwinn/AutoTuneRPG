@@ -90,12 +90,11 @@ public class Evolution : MonoBehaviour
     private int[] elite; // The max fitness individual in old generation
 
     //Play one game
-    public void PlayGame()
+    public void PlayGame(int[] individual)
     {
-        int[] individual = GenerateIndividual();
         Debug.Log("Individual: " + string.Join(", ", individual));
         GameParams Params = new GameParams(individual);
-        Game game = new Game(Params);
+        Game game = new Game(Params,true);
         game.Run(1);
         List<int[]> stats = game.GetStatistics();
         Debug.Log("Stats: " + string.Join(", ", stats[0]));
@@ -208,7 +207,13 @@ public class Evolution : MonoBehaviour
         }
         Debug.Log("Evolution complete");
         Debug.Log("Best individual: " + bestFitness);
-        Debug.Log("Elite: " + string.Join(", ", elite));
+        string paramString = "Elite: ";
+        for (int i = 0; i < ParamNames.Length; i++)
+        {
+            paramString += ParamNames[i] + ": " + elite[i] + ", ";
+        }
+        Debug.Log(paramString);
+        PlayGame(elite);
         // SaveIndividual(elite,"Assets/Scripts/Entity/EliteParam.json");
         // elite=LoadIndividual("Assets/Scripts/Entity/EliteParam.json");
         // Debug.Log("Loaded Elite: " + string.Join(", ", elite));
@@ -222,7 +227,7 @@ public class Evolution : MonoBehaviour
         foreach (int[] individual in population)
         {
             GameParams Params = new GameParams(individual);
-            Game game = new Game(Params);
+            Game game = new Game(Params, true);
             game.Run(1);
             List<int[]> stats = game.GetStatistics();
             int fitness = FitnessFunction(stats);
