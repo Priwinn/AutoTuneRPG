@@ -109,12 +109,12 @@ public class Game
 
     private void printGameState()
     {
-        Debug.Log("Player Party:");
+        //Debug.Log("Player Party:");
         foreach (Entity entity in playerParty.membersEntity)
         {
             Debug.Log(entity.EntityStateString());
         }
-        Debug.Log("Boss Party:");
+        //Debug.Log("Boss Party:");
         foreach (Entity entity in bossParty.membersEntity)
         {
             Debug.Log(entity.EntityStateString());
