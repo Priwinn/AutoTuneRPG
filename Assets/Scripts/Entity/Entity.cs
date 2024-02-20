@@ -59,17 +59,17 @@ public abstract class Entity
         return HP;
     }
 
-    /*
-    public float GetPercentHP()
+    public float GetHPPercentage()
     {
         return (float)HP / (float)maxHP;
     }
-    */
 
+    /*
     public int GetPercentHP()
     {
         return Mathf.Max((int)(((float)HP / (float)maxHP) * 100), 0);
     }
+    */
     
     public int GetMaxHP()
     {
@@ -84,6 +84,11 @@ public abstract class Entity
     public int GetMaxMana()
     {
         return maxMana;
+    }
+
+    public float GetManaPercentage()
+    {
+        return (float)mana / (float)maxMana;
     }
 
     public int GetAttackBuff()
