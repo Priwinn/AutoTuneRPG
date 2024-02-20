@@ -80,14 +80,14 @@ public class Game
             }
             if (printMode)
             {
-                printGameState();
-            }
-            if (printMode)
-            {
                 Debug.Log("Boss turn");
             }
             bossParty.Execute();
             bossParty.ResolveTurn();
+            if (printMode)
+            {
+                printGameState();
+            }
         }
         if (!printMode)
         {
