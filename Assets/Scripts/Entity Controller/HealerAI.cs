@@ -5,8 +5,8 @@ using UnityEngine;
 public class HealerAI : EntityController
 {
     private int AoEThresholdCount = 2;
-    private int AoEThresholdPercentHP = 70;
-    private int SingleThresholdPercentHP = 50;
+    private float AoEThresholdPercentHP = 0.7f;
+    private float SingleThresholdPercentHP = 0.5f;
 
     public HealerAI (Healer healer)
     {
@@ -20,11 +20,11 @@ public class HealerAI : EntityController
 
         foreach (Entity member in party.membersEntity)
         {
-            if (member.GetPercentHP() <= AoEThresholdPercentHP)
+            if (member.GetHPPercentage() <= AoEThresholdPercentHP)
             {
                 count++;
             }
-            if (member.GetPercentHP() <= SingleThresholdPercentHP)
+            if (member.GetHPPercentage() <= SingleThresholdPercentHP)
             {
                 healTarget = member;
             }

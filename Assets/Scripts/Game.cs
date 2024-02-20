@@ -5,7 +5,7 @@ using UnityEngine;
 public class Game
 {
     public readonly GameParams gameParams;
-    List<int[]> gameStatisticsHistory;
+    List<float[]> gameStatisticsHistory;
     public const int statisticsCount = 8;
     bool printMode;
 
@@ -21,10 +21,10 @@ public class Game
     {
         this.gameParams = gameParams;
         this.printMode = printMode;
-        gameStatisticsHistory = new List<int[]>();
+        gameStatisticsHistory = new List<float[]>();
     }
 
-    public List<int[]> GetStatistics()
+    public List<float[]> GetStatistics()
     {
         return gameStatisticsHistory;
     }
@@ -54,7 +54,7 @@ public class Game
         for (int i = 0; i < count; i++)
         {
             int turn_count = StartGame();
-            int[] gameStatistics = { dps.GetPercentHP(), dps.GetMana(), tank.GetPercentHP(), tank.GetMana(), healer.GetPercentHP(), healer.GetMana(), boss.GetPercentHP(), turn_count };
+            float[] gameStatistics = { dps.GetHPPercentage(), dps.GetManaPercentage(), tank.GetHPPercentage(), tank.GetManaPercentage(), healer.GetHPPercentage(), healer.GetManaPercentage(), boss.GetHPPercentage(), turn_count };
             gameStatisticsHistory.Add(gameStatistics);
         }
     }
