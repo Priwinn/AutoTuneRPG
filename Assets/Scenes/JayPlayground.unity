@@ -160,7 +160,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -360.59998, y: -180.4}
+  m_AnchoredPosition: {x: -274, y: 79}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4819453
@@ -267,8 +267,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6957257}
   - component: {fileID: 6957258}
+  - component: {fileID: 6957259}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: GameDesigner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -302,58 +303,78 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   populationSize: 100
-  numGenerations: 100
+  numGenerations: 1000
   mutationRate: 0.01
-  crossover_type: 1
-  selection_type: 0
-  DPS_BA_min: 1
-  DPS_BA_max: 10
-  DPS_BuffAmount_min: 1
-  DPS_BuffAmount_max: 10
-  DPS_BuffTurns_min: 1
-  DPS_BuffTurns_max: 10
-  DPS_BuffMana_min: 1
-  DPS_BuffMana_max: 10
-  DPS_SpecialAttack_min: 1
-  DPS_SpecialAttack_max: 10
-  DPS_SpecialAttackMana_min: 1
-  DPS_SpecialAttackMana_max: 10
-  DPS_Health_min: 1
-  DPS_Health_max: 10
-  Healer_BA_min: 1
-  Healer_BA_max: 10
-  Healer_SingleHeal_min: 1
-  Healer_SingleHeal_max: 10
-  Healer_AOEHeal_min: 1
-  Healer_AOEHeal_max: 10
-  Healer_SingleHealMana_min: 1
-  Healer_SingleHealMana_max: 10
-  Healer_AOEHealMana_min: 1
-  Healer_AOEHealMana_max: 10
-  Healer_Health_min: 1
-  Healer_Health_max: 10
-  Tank_BA_min: 1
-  Tank_BA_max: 10
-  Tank_TauntDMGReduction_min: 1
-  Tank_TauntDMGReduction_max: 10
-  Tank_TauntDuration_min: 1
-  Tank_TauntDuration_max: 10
-  Tank_TauntMana_min: 1
-  Tank_TauntMana_max: 10
-  Tank_SpecialDMG_min: 1
-  Tank_SpecialDMG_max: 10
-  Tank_SpecialHeal_min: 1
-  Tank_SpecialHeal_max: 10
-  Tank_SpecialMana_min: 1
-  Tank_SpecialMana_max: 10
-  Tank_Health_min: 1
-  Tank_Health_max: 10
-  Boss_Single_min: 1
-  Boss_Single_max: 10
-  Boss_AOE_min: 1
-  Boss_AOE_max: 10
-  Boss_SingleProb_min: 1
-  Boss_SingleProb_max: 10
+  crossover_type: 0
+  selection_type: 3
+  PlayerLoseWeight: 300
+  PlayerDeathWeight: 100
+  HPManaWeight: 100
+  RoundWeight: 1
+  targetRounds: 15
+  baseFitness: 1000
+  DPS_maxHP_min: 1
+  DPS_maxHP_max: 100
+  DPS_attackBuff_min: 1
+  DPS_attackBuff_max: 100
+  DPS_attackBuffDuration_min: 1
+  DPS_attackBuffDuration_max: 5
+  DPS_attackBuffCost_min: 1
+  DPS_attackBuffCost_max: 50
+  DPS_singleDamage_min: 10
+  DPS_singleDamage_max: 100
+  DPS_singleDamageCost_min: 1
+  DPS_singleDamageCost_max: 50
+  DPS_basicDamage_min: 1
+  DPS_basicDamage_max: 10
+  Tank_maxHP_min: 1
+  Tank_maxHP_max: 100
+  Tank_tauntAttackDebuff_min: 1
+  Tank_tauntAttackDebuff_max: 10
+  Tank_tauntDuration_min: 1
+  Tank_tauntDuration_max: 5
+  Tank_tauntCost_min: 1
+  Tank_tauntCost_max: 50
+  Tank_singleDamage_min: 1
+  Tank_singleDamage_max: 100
+  Tank_singleHeal_min: 1
+  Tank_singleHeal_max: 100
+  Tank_singleCost_min: 1
+  Tank_singleCost_max: 50
+  Tank_basicDamage_min: 1
+  Tank_basicDamage_max: 10
+  Healer_maxHP_min: 1
+  Healer_maxHP_max: 100
+  Healer_singleHeal_min: 1
+  Healer_singleHeal_max: 100
+  Healer_singleHealCost_min: 1
+  Healer_singleHealCost_max: 100
+  Healer_aoeHeal_min: 1
+  Healer_aoeHeal_max: 100
+  Healer_aoeHealCost_min: 1
+  Healer_aoeHealCost_max: 100
+  Healer_basicDamage_min: 1
+  Healer_basicDamage_max: 10
+  Boss_maxHP_min: 300
+  Boss_maxHP_max: 1000
+  Boss_singleDamage_min: 10
+  Boss_singleDamage_max: 100
+  Boss_aoeDamage_min: 10
+  Boss_aoeDamage_max: 100
+  Boss_aoeProbability_min: 20
+  Boss_aoeProbability_max: 50
+--- !u!114 &6957259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6957255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 836e3b17dec278842ab49a9c19b6717b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

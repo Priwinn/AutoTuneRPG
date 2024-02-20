@@ -23,6 +23,7 @@ public class Evolution : MonoBehaviour
     public int HPManaWeight=1;
     public int RoundWeight=1;
     public int targetRounds=15;
+    public int baseFitness=10000;
 
 
     [Header("DPS Settings")]
@@ -233,7 +234,7 @@ public class Evolution : MonoBehaviour
         {
             GameParams Params = new GameParams(individual);
             Game game = new Game(Params);
-            game.Run(1);
+            game.Run(10);
             List<float[]> stats = game.GetStatistics();
             float fitness = FitnessFunction(stats);
             fitPopulation.Add(fitness);
@@ -250,38 +251,42 @@ public class Evolution : MonoBehaviour
     {
         //TODO define fitness function
         //Use sum of all params as fitness
-        float fitness = 10000f;
+        float fitness = 0f;
         
-        for (int i = 0; i < stats[0].Length; i++)
+        for (int i = 0; i < stats.Count; i++)
         {
-            fitness += 100-stats[0][i];
-        }
-        fitness = fitness / 700 * HPManaWeight;
-        //Death penalty
-        if (stats[0][0] == 0)
-        {
-            fitness -= PlayerDeathWeight;
-        }
-        if (stats[0][2] == 0)
-        {
-            fitness -= PlayerDeathWeight;
-        }
-        if (stats[0][4] == 0)
-        {
-            fitness -= PlayerDeathWeight;
-        }
+            float hpManaFitness = 0;
+            for (int j = 0; j < stats[i].Length-1; j+=2)
+            {
+                hpManaFitness += 1-stats[i][j];               
+            }
+            hpManaFitness = hpManaFitness / 4;
+            //Death penalty
+            float deathPenalty = 0;
+            if (stats[i][0] == 0)
+            {
+                deathPenalty -= PlayerDeathWeight;
+            }
+            if (stats[i][2] == 0)
+            {
+                deathPenalty -= PlayerDeathWeight;
+            }
+            if (stats[i][4] == 0)
+            {
+                deathPenalty -= PlayerDeathWeight;
+            }
+            //Lose weight penalty
+            float losePenalty = 0;
+            if (stats[i][6] != 0)
+            {
+                losePenalty =  -PlayerLoseWeight;
+            }
+            //Round penalty as squared difference from target rounds
+            float roundPenalty = -Mathf.Pow(stats[i][7]-targetRounds,2);
 
-
-        //Lose weight penalty
-        if (stats[0][6] != 0)
-        {
-            fitness -= PlayerLoseWeight;
+            fitness += baseFitness + hpManaFitness*HPManaWeight + losePenalty + roundPenalty*RoundWeight + deathPenalty;
         }
-        //Round penalty as squared difference from target rounds
-        fitness -= RoundWeight*Mathf.Pow(stats[0][7]-targetRounds,2);
-
-        // fitness += stats[0][7]*RoundWeight;
-
+        fitness = fitness / stats.Count;
         return Mathf.Max(fitness, 0);
     }
 
