@@ -10,9 +10,9 @@ public struct BossParam
     public int maxHP;
     public int singleDamage;
     public int aoeDamage;
-    public float aoeProbability;
+    public int aoeProbability;
 
-    public BossParam(int maxHP, int singleDamage, int aoeDamage, float aoeProbability)
+    public BossParam(int maxHP, int singleDamage, int aoeDamage, int aoeProbability)
     {
         this.maxHP = maxHP;
         this.singleDamage = singleDamage;
