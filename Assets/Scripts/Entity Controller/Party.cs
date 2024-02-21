@@ -36,6 +36,18 @@ public class Party
         {
             if (controller.GetEntity().GetHP() <= 0)
             {
+                if (printMode)
+                {
+                    Debug.Log(controller.GetEntity() + " IS FUCKING DYING AND CAN'T ACT!!");
+                }
+                continue;
+            }
+            else if (controller.GetEntity().IsStunned())
+            {
+                if (printMode)
+                {
+                    Debug.Log(controller.GetEntity() + " IS STUNNED AND CAN'T ACT!!");
+                }
                 continue;
             }
             else
@@ -66,7 +78,6 @@ public class Party
                 membersEntity[i].ResolveTurn();
             }
         }
-        
     }
 
     public void AOEDamage(int damage)
@@ -82,6 +93,14 @@ public class Party
         foreach (Entity entity in membersEntity)
         {
             entity.Heal(heal);
+        }
+    }
+
+    public void AoERecoverMana(int mana)
+    {
+        foreach (Entity entity in membersEntity)
+        {
+            entity.RecoverMana(mana);
         }
     }
 
@@ -114,6 +133,22 @@ public class Party
         foreach (Entity entity in membersEntity)
         {
             entity.DebuffDefense(debuff, duration);
+        }
+    }
+
+    public void AOETaunted(Entity tauntTarget, int duration)
+    {
+        foreach (Entity entity in membersEntity)
+        {
+            entity.Taunted(tauntTarget, duration);
+        }
+    }
+
+    public void AOEStunned(int duration)
+    {
+        foreach (Entity entity in membersEntity)
+        {
+            entity.Stunned(duration);
         }
     }
 

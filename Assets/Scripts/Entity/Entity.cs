@@ -27,6 +27,9 @@ public abstract class Entity
     protected bool isTaunted = false;
     protected int tauntDuration = 0;
 
+    protected bool isStunned = false;
+    protected int stunDuration = 0;
+
     public Entity(int maxHP, int maxMana, bool printMode=false)
     {
         this.maxHP = maxHP; HP = maxHP;
@@ -91,6 +94,23 @@ public abstract class Entity
         return (float)mana / (float)maxMana;
     }
 
+    public int RecoverMana(int m)
+    {
+        mana = Mathf.Min(mana + m, maxMana);
+        return m;
+    }
+
+    public bool ResolveCost(int manaCost, int hpCost)
+    {
+        if (HP < hpCost || mana < manaCost)
+        {
+            return false;
+        }
+        HP -= hpCost;
+        mana -= manaCost;
+        return true;
+    }
+
     public int GetAttackBuff()
     {
         return attackBuff;
@@ -139,6 +159,16 @@ public abstract class Entity
     public int GetTauntDuration()
     {
         return tauntDuration;
+    }
+
+    public bool IsStunned()
+    {
+        return isStunned;
+    }
+
+    public int GetStunDuration()
+    {
+        return stunDuration;
     }
 
     virtual public int Damage(int damage)
@@ -196,6 +226,12 @@ public abstract class Entity
         tauntDuration = duration;
     }
 
+    virtual public void Stunned(int duration)
+    {
+        isStunned = true;
+        stunDuration = duration;
+    }
+
     virtual public void ResolveTurn()
     {
         if (attackBuffDuration > 0)
@@ -243,6 +279,14 @@ public abstract class Entity
             {
                 isTaunted = false;
                 tauntDuration = 0;
+            }
+        }
+        if (stunDuration > 0)
+        {
+            stunDuration--;
+            if (stunDuration == 0)
+            {
+                isStunned = false;
             }
         }
     }
