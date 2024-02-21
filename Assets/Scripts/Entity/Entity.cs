@@ -175,6 +175,10 @@ public abstract class Entity
     {
         damage = Mathf.Max(damage - defenseBuff + defenseDebuff, 0);
         HP -= damage;
+        if (printMode)
+        {
+            //TODO when defense buff and debuff is added
+        }
         if (HP <= 0)
         {
             OnDeath();
@@ -186,6 +190,10 @@ public abstract class Entity
     {
         heal = Mathf.Max(heal, 0);
         HP += heal;
+        if (printMode)
+        {
+            //TODO when heal buff and debuff is added
+        }
         HP = Mathf.Min(maxHP, HP);
         return heal;
     }

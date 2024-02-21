@@ -53,10 +53,11 @@ public class Boss : Entity
 
     public void AoEAttack(Party party)
     {
-        party.AOEDamage(bossParam.aoeDamage + attackBuff - attackDebuff);
+        int damage = bossParam.aoeDamage + attackBuff - attackDebuff;
+        party.AOEDamage(damage);
         if (printMode)
         {
-            Debug.Log("Boss AoE Attack for " + bossParam.aoeDamage + " damage!");
+            Debug.Log("Boss AoE Attack for " + damage + " damage!");
         }
     }
 }
