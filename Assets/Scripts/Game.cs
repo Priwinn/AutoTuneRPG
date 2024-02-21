@@ -31,7 +31,7 @@ public class Game
 
     private void InitGame()
     {
-        playerParty = new Party(printMode);
+        playerParty = new Party("Player Party", printMode);
         dps = new DPS(gameParams.dpsParam, printMode);
         tank = new Tank(gameParams.tankParam, printMode);
         healer = new Healer(gameParams.healerParam, printMode);
@@ -39,7 +39,7 @@ public class Game
         playerParty.Add(new TankAI(tank));
         playerParty.Add(new HealerAI(healer));
 
-        bossParty = new Party(printMode);
+        bossParty = new Party("Boss Party", printMode);
         boss = new Boss(gameParams.bossParam, printMode);
         bossParty.Add(new BossAI(boss));
         bossParty.SetTargetParty(playerParty);

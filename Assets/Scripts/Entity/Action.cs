@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class Action
 {
+    public int manaCost = 0;
+    public int hpCost = 0;
+
+    // TODO consider fewer AoE variable? like this
+    // public bool debuffAoE = false;   // debuff include stun and taunt
+    // public bool buffAoE = false;     // buff include heal and mana recovery
+
     public int damage = 0;
     public bool damageAoE = false;
     public bool damageAll = false;
@@ -12,9 +19,13 @@ public class Action
     public int heal = 0;
     public bool healAoE = false;
 
+    //TODO implement heal debuff for healing and getting healed
+    public int healDebuff = 0;
+
     public int manaRecover = 0;
     public bool manaRecoverAoE = false;
 
+    //TODO
     public int hitCountBuff = 0;
     public bool hitCountBuffAoE = false;
     public bool hitCountBuffAll = false;
@@ -44,7 +55,5 @@ public class Action
     public int stunExtraDamage = 0;
 
     public int duration = 0;
-
-    public int manaCost = 0;
-    public int hpCost = 0;
+    //TODO: duration works with damage, heal, mana recovery
 }

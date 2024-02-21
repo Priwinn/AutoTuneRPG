@@ -8,11 +8,12 @@ public class Party
     public readonly List<EntityController> membersController;
     public readonly List<Entity> graveyardEntity;
     public readonly List<EntityController> graveyardController;
+    public readonly string partyName;
 
     private bool printMode;
 
 
-    public Party(bool printMode=false)
+    public Party(string partyName, bool printMode=false)
     {
         membersEntity = new List<Entity>();
         graveyardEntity = new List<Entity>();
@@ -21,6 +22,7 @@ public class Party
         graveyardController = new List<EntityController>();
 
         this.printMode = printMode;
+        this.partyName = partyName;
     }
 
     public void Add(EntityController controller)
