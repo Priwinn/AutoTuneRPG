@@ -267,7 +267,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6957257}
   - component: {fileID: 6957258}
-  - component: {fileID: 6957259}
   m_Layer: 0
   m_Name: GameDesigner
   m_TagString: Untagged
@@ -363,18 +362,6 @@ MonoBehaviour:
   Boss_aoeDamage_max: 100
   Boss_aoeProbability_min: 20
   Boss_aoeProbability_max: 50
---- !u!114 &6957259
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6957255}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 836e3b17dec278842ab49a9c19b6717b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-public class JsonIO : MonoBehaviour
+public class JsonIO
 {
     public static string[] ParamNames = new string[] { "DPS_maxHP", "DPS_attackBuff", "DPS_attackBuffDuration", "DPS_attackBuffCost", "DPS_singleDamage", "DPS_singleDamageCost", "DPS_basicDamage",
                                                         "Tank_maxHP", "Tank_tauntAttackDebuff", "Tank_tauntDuration", "Tank_tauntCost", "Tank_singleDamage", "Tank_singleHeal", "Tank_singleCost", "Tank_basicDamage",
