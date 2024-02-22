@@ -48,6 +48,7 @@ public class Healer : Entity
         basicAttack.abilityName = "HealerBasicAttack";
         basicAttack.damage = healerParam.basicDamage;
         basicAttack.hitCount = 1;
+        basicAttack.manaRecover = 10;
         return basicAttack;
     }
 
