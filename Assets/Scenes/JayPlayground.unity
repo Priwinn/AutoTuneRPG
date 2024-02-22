@@ -378,69 +378,69 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ddb2bd624b1fcc4eaf88bb6144f1af7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  populationSize: 100
+  populationSize: 10
   numGenerations: 100
-  mutationRate: 0.01
+  mutationRate: 0.1
   crossover_type: 0
   selection_type: 0
-  PlayerLoseWeight: 1
-  PlayerDeathWeight: 1
-  HPWeight: 1
-  ManaWeight: 1
+  PlayerLoseWeight: 300
+  PlayerDeathWeight: 100
+  HPWeight: 100
+  ManaWeight: 10
   RoundWeight: 1
   targetRounds: 15
-  baseFitness: 10000
-  runsPerIndividual: 10
+  baseFitness: 1000
+  runsPerIndividual: 5
   DPS_maxHP_min: 1
-  DPS_maxHP_max: 20
+  DPS_maxHP_max: 3
   DPS_attackBuff_min: 1
-  DPS_attackBuff_max: 20
+  DPS_attackBuff_max: 3
   DPS_attackBuffDuration_min: 1
-  DPS_attackBuffDuration_max: 20
+  DPS_attackBuffDuration_max: 3
   DPS_attackBuffCost_min: 1
-  DPS_attackBuffCost_max: 20
+  DPS_attackBuffCost_max: 3
   DPS_singleDamage_min: 1
-  DPS_singleDamage_max: 20
+  DPS_singleDamage_max: 3
   DPS_singleDamageCost_min: 1
-  DPS_singleDamageCost_max: 20
+  DPS_singleDamageCost_max: 3
   DPS_basicDamage_min: 1
-  DPS_basicDamage_max: 20
+  DPS_basicDamage_max: 3
   Tank_maxHP_min: 1
-  Tank_maxHP_max: 20
+  Tank_maxHP_max: 3
   Tank_tauntAttackDebuff_min: 1
-  Tank_tauntAttackDebuff_max: 20
+  Tank_tauntAttackDebuff_max: 3
   Tank_tauntDuration_min: 1
-  Tank_tauntDuration_max: 20
+  Tank_tauntDuration_max: 3
   Tank_tauntCost_min: 1
-  Tank_tauntCost_max: 20
+  Tank_tauntCost_max: 3
   Tank_singleDamage_min: 1
-  Tank_singleDamage_max: 20
+  Tank_singleDamage_max: 3
   Tank_singleHeal_min: 1
-  Tank_singleHeal_max: 20
+  Tank_singleHeal_max: 3
   Tank_singleCost_min: 1
-  Tank_singleCost_max: 20
+  Tank_singleCost_max: 3
   Tank_basicDamage_min: 1
-  Tank_basicDamage_max: 20
+  Tank_basicDamage_max: 3
   Healer_maxHP_min: 1
-  Healer_maxHP_max: 20
+  Healer_maxHP_max: 3
   Healer_singleHeal_min: 1
-  Healer_singleHeal_max: 20
+  Healer_singleHeal_max: 3
   Healer_singleHealCost_min: 1
-  Healer_singleHealCost_max: 20
+  Healer_singleHealCost_max: 3
   Healer_aoeHeal_min: 1
-  Healer_aoeHeal_max: 20
+  Healer_aoeHeal_max: 3
   Healer_aoeHealCost_min: 1
-  Healer_aoeHealCost_max: 20
+  Healer_aoeHealCost_max: 3
   Healer_basicDamage_min: 1
-  Healer_basicDamage_max: 20
+  Healer_basicDamage_max: 3
   Boss_maxHP_min: 1
-  Boss_maxHP_max: 20
+  Boss_maxHP_max: 3
   Boss_singleDamage_min: 1
-  Boss_singleDamage_max: 20
+  Boss_singleDamage_max: 3
   Boss_aoeDamage_min: 1
-  Boss_aoeDamage_max: 20
+  Boss_aoeDamage_max: 3
   Boss_aoeProbability_min: 1
-  Boss_aoeProbability_max: 20
+  Boss_aoeProbability_max: 3
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

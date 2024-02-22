@@ -45,22 +45,10 @@ public class NTupleLandscape
         foreach (int[] tuple in _tuples)
         {
             int[][] searchSpaceValues = GetTupleCombinations(tuple, _searchSpace);
-            foreach (int[] searchSpaceValue in searchSpaceValues)
+            string stringTuple = string.Join(",", tuple);
+            if (!_tupleStats.ContainsKey(stringTuple))
             {
-                string stringTuple = string.Join(",", tuple);
-                string stringSearchSpaceValue = string.Join(",", searchSpaceValue);
-                if (!_tupleStats.ContainsKey(stringTuple))
-                {
-                    _tupleStats.Add(stringTuple, new Dictionary<string, Dictionary<string, float>>());
-                }
-                _tupleStats[stringTuple].Add(stringSearchSpaceValue, new Dictionary<string, float>()
-                {
-                    { "n", 0f },
-                    { "min", 0.0f },
-                    { "max", 0.0f },
-                    { "sum", 0.0f },
-                    { "sum_squared", 0.0f }
-                });
+                _tupleStats.Add(stringTuple, new Dictionary<string, Dictionary<string, float>>());
             }
         }
     }
@@ -74,7 +62,17 @@ public class NTupleLandscape
             int[] searchSpaceValue = GetSearchSpaceValue(point, tuple);
             string stringTuple = string.Join(",", tuple);
             string stringSearchSpaceValue = string.Join(",", searchSpaceValue);
-
+            
+            if (!_tupleStats[stringTuple].ContainsKey(stringSearchSpaceValue))
+            {
+                _tupleStats[stringTuple].Add(stringSearchSpaceValue, new Dictionary<string, float>(){
+                    {"n", 0},
+                    {"max", float.MinValue},
+                    {"min", float.MaxValue},
+                    {"sum", 0.0f},
+                    {"sum_squared", 0.0f}
+                });
+            }
             _tupleStats[stringTuple][stringSearchSpaceValue]["n"] += 1;
             _tupleStats[stringTuple][stringSearchSpaceValue]["max"] = Mathf.Max(_tupleStats[stringTuple][stringSearchSpaceValue]["max"], fitness);
             _tupleStats[stringTuple][stringSearchSpaceValue]["min"] = Mathf.Min(_tupleStats[stringTuple][stringSearchSpaceValue]["min"], fitness);
@@ -93,6 +91,11 @@ public class NTupleLandscape
             int[] searchSpaceValue = GetSearchSpaceValue(point, tuple);
             string stringTuple = string.Join(",", tuple);
             string stringSearchSpaceValue = string.Join(",", searchSpaceValue);
+            //Check if the search space value has a dict
+            if (!_tupleStats[stringTuple].ContainsKey(stringSearchSpaceValue))
+            {
+                continue;
+            }
             if (_tupleStats[stringTuple][stringSearchSpaceValue]["n"] > 0)
             {
                 sum += _tupleStats[stringTuple][stringSearchSpaceValue]["sum"] / _tupleStats[stringTuple][stringSearchSpaceValue]["n"];
@@ -118,7 +121,7 @@ public class NTupleLandscape
             int[] searchSpaceValue = GetSearchSpaceValue(point, tuple);
             string stringTuple = string.Join(",", tuple);
             string stringSearchSpaceValue = string.Join(",", searchSpaceValue);
-            if (_tupleStats[stringTuple][stringSearchSpaceValue]["n"] == 0)
+            if ((!_tupleStats[stringTuple].ContainsKey(stringSearchSpaceValue)) || (_tupleStats[stringTuple][stringSearchSpaceValue]["n"] == 0))
             {
                 float n = 0;
                 foreach (Dictionary<string, float> value in _tupleStats[stringTuple].Values)
