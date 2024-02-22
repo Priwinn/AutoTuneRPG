@@ -26,6 +26,7 @@ public class Evolution : MonoBehaviour
     public int targetRounds=15;
     public int baseFitness=10000;
     public int runsPerIndividual=10;
+    public bool saveFiles=false;
 
 
     [Header("DPS Settings")]
@@ -94,7 +95,7 @@ public class Evolution : MonoBehaviour
                                                         "Tank_maxHP", "Tank_tauntAttackDebuff", "Tank_tauntDuration", "Tank_tauntCost", "Tank_singleDamage", "Tank_singleHeal", "Tank_singleCost", "Tank_basicDamage",
                                                         "Healer_maxHP", "Healer_singleHeal", "Healer_singleHealCost", "Healer_aoeHeal", "Healer_aoeHealCost", "Healer_basicDamage",
                                                         "Boss_maxHP", "Boss_singleDamage", "Boss_aoeDamage", "Boss_aoeProbability" };    private List<int[]> population; // Old population
-    private string[] FitnessNames = new string[] { "Fitness", "HPFitness", "ManaFitness", "SurviveReward", "RoundRewards", "WinReward" };
+    private string[] FitnessNames = new string[] { "Fitness", "HPFitness", "ManaFitness","UnweightedManaFitness", "SurviveReward", "RoundRewards", "WinReward" };
     private List<float> fitPopulation; // Old population fitness scores
     private int generationFitness; // Total fitness for old population
     private int[] elite; // The max fitness individual in old generation
@@ -230,15 +231,42 @@ public class Evolution : MonoBehaviour
             paramString += ParamNames[i] + ": " + elite[i] + ", ";
         }
         Debug.Log(paramString);
-
-        // Save best fitnesses to csv file
-        string csv = "Generation,Fitness,HPFitness,ManaFitness,SurviveReward,RoundRewards,WinReward\n";
-        for (int i = 0; i < bestFitnesses.Length; i++)
+        if (saveFiles)
         {
-            csv += i + "," + string.Join(",", bestFitnesses[i]) + "\n";
+            // Save best fitnesses to csv file
+            string run_id = System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+            string csv = "Generation," + string.Join(",", FitnessNames) + "\n";
+            for (int i = 0; i < bestFitnesses.Length; i++)
+            {
+                csv += i + "," + string.Join(",", bestFitnesses[i]) + "\n";
+            }
+            System.IO.File.WriteAllText("Assets/Scripts/results/evolution_" + run_id + ".csv", csv);
+
+            //Save evolution settings to json
+            string json = "{\n";
+            json += "\"populationSize\": " + populationSize + ",\n";
+            json += "\"numGenerations\": " + numGenerations + ",\n";
+            json += "\"mutationRate\": " + mutationRate + ",\n";
+            json += "\"crossover_type\": " + crossover_type + ",\n";
+            json += "\"selection_type\": " + selection_type + ",\n";
+            json += "\"PlayerWinWeight\": " + PlayerWinWeight + ",\n";
+            json += "\"PlayerSurviveWeight\": " + PlayerSurviveWeight + ",\n";
+            json += "\"HPWeight\": " + HPWeight + ",\n";
+            json += "\"ManaWeight\": " + ManaWeight + ",\n";
+            json += "\"RoundWeight\": " + RoundWeight + ",\n";
+            json += "\"targetRounds\": " + targetRounds + ",\n";
+            json += "\"baseFitness\": " + baseFitness + ",\n";
+            json += "\"runsPerIndividual\": " + runsPerIndividual + ",\n";
+            for (int i = 0; i < ParamNames.Length; i++)
+            {
+                json += "\"" + ParamNames[i] + "\": " + elite[i] + ",\n";
+            }
+            json = json.Substring(0, json.Length - 2) + "\n}";
+            System.IO.File.WriteAllText("Assets/Scripts/results/evolution_" + run_id + ".json", json);
+            SaveIndividual(elite,"Assets/Scripts/results/elite_" + run_id + ".json");
         }
-        System.IO.File.WriteAllText("Assets/Scripts/BestFitnesses.csv", csv);
-        
+
+
         // SaveIndividual(elite,"Assets/Scripts/Entity/EliteParam.json");
         // elite=LoadIndividual("Assets/Scripts/Entity/EliteParam.json");
         // Debug.Log("Loaded Elite: " + string.Join(", ", elite));
@@ -309,12 +337,13 @@ public class Evolution : MonoBehaviour
             
         }
         hpFitness = HPWeight*hpFitness / stats.Count;
+        float unweightedManaFitness = manaFitness / stats.Count;
         manaFitness = ManaWeight*manaFitness / stats.Count;
         surviveReward = surviveReward / stats.Count;
         roundReward = RoundWeight*roundReward / stats.Count;
         winReward = winReward / stats.Count;
         fitness = baseFitness + hpFitness + manaFitness + surviveReward + roundReward + winReward;
-        return new float[] {Mathf.Max(fitness,0),hpFitness,manaFitness,surviveReward,roundReward,winReward};
+        return new float[] {Mathf.Max(fitness,0),hpFitness,manaFitness,unweightedManaFitness,surviveReward,roundReward,winReward};
     }
 
     // Select a parent for crossover
