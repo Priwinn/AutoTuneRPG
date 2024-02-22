@@ -155,9 +155,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1370795803}
-  - {fileID: 1919202248}
   m_Father: {fileID: 1460972788}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -378,7 +377,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ddb2bd624b1fcc4eaf88bb6144f1af7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  populationSize: 10
+  populationSize: 1000
   numGenerations: 100
   mutationRate: 0.1
   crossover_type: 0
@@ -392,55 +391,55 @@ MonoBehaviour:
   baseFitness: 1000
   runsPerIndividual: 5
   DPS_maxHP_min: 1
-  DPS_maxHP_max: 3
+  DPS_maxHP_max: 20
   DPS_attackBuff_min: 1
-  DPS_attackBuff_max: 3
+  DPS_attackBuff_max: 20
   DPS_attackBuffDuration_min: 1
-  DPS_attackBuffDuration_max: 3
+  DPS_attackBuffDuration_max: 20
   DPS_attackBuffCost_min: 1
-  DPS_attackBuffCost_max: 3
+  DPS_attackBuffCost_max: 20
   DPS_singleDamage_min: 1
-  DPS_singleDamage_max: 3
+  DPS_singleDamage_max: 20
   DPS_singleDamageCost_min: 1
-  DPS_singleDamageCost_max: 3
+  DPS_singleDamageCost_max: 20
   DPS_basicDamage_min: 1
-  DPS_basicDamage_max: 3
+  DPS_basicDamage_max: 20
   Tank_maxHP_min: 1
-  Tank_maxHP_max: 3
+  Tank_maxHP_max: 20
   Tank_tauntAttackDebuff_min: 1
-  Tank_tauntAttackDebuff_max: 3
+  Tank_tauntAttackDebuff_max: 20
   Tank_tauntDuration_min: 1
-  Tank_tauntDuration_max: 3
+  Tank_tauntDuration_max: 20
   Tank_tauntCost_min: 1
-  Tank_tauntCost_max: 3
+  Tank_tauntCost_max: 20
   Tank_singleDamage_min: 1
-  Tank_singleDamage_max: 3
+  Tank_singleDamage_max: 20
   Tank_singleHeal_min: 1
-  Tank_singleHeal_max: 3
+  Tank_singleHeal_max: 20
   Tank_singleCost_min: 1
-  Tank_singleCost_max: 3
+  Tank_singleCost_max: 20
   Tank_basicDamage_min: 1
-  Tank_basicDamage_max: 3
+  Tank_basicDamage_max: 20
   Healer_maxHP_min: 1
-  Healer_maxHP_max: 3
+  Healer_maxHP_max: 20
   Healer_singleHeal_min: 1
-  Healer_singleHeal_max: 3
+  Healer_singleHeal_max: 20
   Healer_singleHealCost_min: 1
-  Healer_singleHealCost_max: 3
+  Healer_singleHealCost_max: 20
   Healer_aoeHeal_min: 1
-  Healer_aoeHeal_max: 3
+  Healer_aoeHeal_max: 20
   Healer_aoeHealCost_min: 1
-  Healer_aoeHealCost_max: 3
+  Healer_aoeHealCost_max: 20
   Healer_basicDamage_min: 1
-  Healer_basicDamage_max: 3
+  Healer_basicDamage_max: 20
   Boss_maxHP_min: 1
-  Boss_maxHP_max: 3
+  Boss_maxHP_max: 20
   Boss_singleDamage_min: 1
-  Boss_singleDamage_max: 3
+  Boss_singleDamage_max: 20
   Boss_aoeDamage_min: 1
-  Boss_aoeDamage_max: 3
+  Boss_aoeDamage_max: 20
   Boss_aoeProbability_min: 1
-  Boss_aoeProbability_max: 3
+  Boss_aoeProbability_max: 20
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -561,7 +560,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 142.5621, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &689458568
 MonoBehaviour:
@@ -583,7 +582,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: NTBEA (experimental)
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -887,6 +886,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1919202248}
   - {fileID: 4819452}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -990,19 +990,19 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1919202247}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 689458567}
-  m_Father: {fileID: 4819452}
-  m_RootOrder: 1
+  m_Father: {fileID: 1460972788}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 358, y: 29.321}
-  m_SizeDelta: {x: 160, y: 58.6422}
+  m_AnchoredPosition: {x: 198.00867, y: 79}
+  m_SizeDelta: {x: 245.6033, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1919202249
 MonoBehaviour:
