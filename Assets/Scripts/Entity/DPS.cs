@@ -50,6 +50,7 @@ public class DPS : Entity
         basicAttack.abilityName = "DPSBasicAttack";
         basicAttack.damage = dpsParam.basicDamage;
         basicAttack.hitCount = 1;
+        basicAttack.manaRecover = 10;
         return basicAttack;
     }
 

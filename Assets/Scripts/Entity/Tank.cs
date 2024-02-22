@@ -52,6 +52,7 @@ public class Tank : Entity
         basicAttack.abilityName = "TankBasicAttack";
         basicAttack.damage = tankParam.basicDamage;
         basicAttack.hitCount = 1;
+        basicAttack.manaRecover = 10;
         return basicAttack;
     }
 
