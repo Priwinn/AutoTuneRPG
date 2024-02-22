@@ -310,11 +310,12 @@ MonoBehaviour:
   PlayerWinWeight: 300
   PlayerSurviveWeight: 100
   HPWeight: 100
-  ManaWeight: 100
+  ManaWeight: 0
   RoundWeight: 200
   targetRounds: 15
   baseFitness: 0
   runsPerIndividual: 10
+  saveFiles: 0
   DPS_maxHP_min: 1
   DPS_maxHP_max: 100
   DPS_attackBuff_min: 1
