@@ -307,19 +307,19 @@ MonoBehaviour:
   mutationRate: 0.01
   crossover_type: 0
   selection_type: 3
-  PlayerLoseWeight: 300
-  PlayerDeathWeight: 100
+  PlayerWinWeight: 300
+  PlayerSurviveWeight: 100
   HPWeight: 100
   ManaWeight: 100
-  RoundWeight: 1
+  RoundWeight: 200
   targetRounds: 15
-  baseFitness: 1000
+  baseFitness: 0
   runsPerIndividual: 10
   DPS_maxHP_min: 1
   DPS_maxHP_max: 100
   DPS_attackBuff_min: 1
   DPS_attackBuff_max: 100
-  DPS_attackBuffDuration_min: 1
+  DPS_attackBuffDuration_min: 2
   DPS_attackBuffDuration_max: 5
   DPS_attackBuffCost_min: 1
   DPS_attackBuffCost_max: 50
