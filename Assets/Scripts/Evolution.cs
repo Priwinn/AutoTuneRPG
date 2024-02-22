@@ -210,6 +210,7 @@ public class Evolution : MonoBehaviour
             population = newPopulation;
             // Evaluate fitness of each individual
             bestFitness = EvaluateFitness();
+            Debug.Log("Generation " + generation + " best fitness: " + bestFitness[0]);
 
 
         }
