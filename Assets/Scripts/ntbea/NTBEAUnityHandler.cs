@@ -116,13 +116,14 @@ public class NTBEAUnityHandler : MonoBehaviour
         for (int i = 0; i < ParamMins.Length; i++)
         {
             //Discretise the parameter space
-            validParam[i] = Enumerable.Range(ParamMins[i], ParamMaxs[i]).ToArray();
+            validParam[i] = Enumerable.Range(ParamMins[i], ParamMaxs[i] - ParamMins[i] + 1).ToArray();
+            Debug.Log("validParam["+i+"]: " + string.Join(", ", validParam[i]));
         }
         evaluator = new Evaluator(runsPerIndividual, HPWeight, ManaWeight, PlayerDeathWeight, PlayerLoseWeight, baseFitness, targetRounds);
         searchSpace = new SearchSpace(validParam);
         landscape = new NTupleLandscape(searchSpace);
-        mutator = new Mutator(searchSpace);
-        ntbea = new NTupleEvolutionaryAlgorithm(landscape, evaluator, searchSpace, mutator);
+        mutator = new Mutator(searchSpace, false, false, mutationRate, true);
+        ntbea = new NTupleEvolutionaryAlgorithm(landscape, evaluator, searchSpace, mutator, 2, 1, 5);
     }
     public void Run(){
         UpdateParams();

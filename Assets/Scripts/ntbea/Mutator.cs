@@ -48,7 +48,6 @@ public class Mutator
     public int[] Mutate(int[] point)
     {
         int length = point.Length;
-        Debug.Log("Mutating point: " + point);
         // Perform swap mutation operation
         if (_swapMutate)
         {
