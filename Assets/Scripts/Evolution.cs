@@ -18,8 +18,8 @@ public class Evolution : MonoBehaviour
     public float mutationRate = 0.01f;
     public int crossover_type=0; //0 for uniform crossover, 1 for n point crossover
     public int selection_type=0; //0 for roulette wheel selection, >0 for tournament selection
-    public int PlayerLoseWeight=1;
-    public int PlayerDeathWeight=1;
+    public int PlayerWinWeight=1;
+    public int PlayerSurviveWeight=1;
     public int HPWeight=1;
     public int ManaWeight=1;
     public int RoundWeight=1;
@@ -94,7 +94,7 @@ public class Evolution : MonoBehaviour
                                                         "Tank_maxHP", "Tank_tauntAttackDebuff", "Tank_tauntDuration", "Tank_tauntCost", "Tank_singleDamage", "Tank_singleHeal", "Tank_singleCost", "Tank_basicDamage",
                                                         "Healer_maxHP", "Healer_singleHeal", "Healer_singleHealCost", "Healer_aoeHeal", "Healer_aoeHealCost", "Healer_basicDamage",
                                                         "Boss_maxHP", "Boss_singleDamage", "Boss_aoeDamage", "Boss_aoeProbability" };    private List<int[]> population; // Old population
-    private string[] FitnessNames = new string[] { "Fitness", "HPFitness", "ManaFitness", "DeathPenalty", "RoundPenalty", "LosePenalty" };
+    private string[] FitnessNames = new string[] { "Fitness", "HPFitness", "ManaFitness", "SurviveReward", "RoundRewards", "WinReward" };
     private List<float> fitPopulation; // Old population fitness scores
     private int generationFitness; // Total fitness for old population
     private int[] elite; // The max fitness individual in old generation
@@ -179,6 +179,7 @@ public class Evolution : MonoBehaviour
         UpdateRanges();
         EvaluateFitness();
         float[] bestFitness = new float[] {0,0,0,0,0,0};
+        float[][] bestFitnesses = new float[numGenerations][];
         for (int generation = 0; generation < numGenerations; generation++)
         {
             // Create a new population
@@ -210,6 +211,7 @@ public class Evolution : MonoBehaviour
             population = newPopulation;
             // Evaluate fitness of each individual
             bestFitness = EvaluateFitness();
+            bestFitnesses[generation] = bestFitness;
             Debug.Log("Generation " + generation + " best fitness: " + bestFitness[0]);
 
 
@@ -228,6 +230,14 @@ public class Evolution : MonoBehaviour
             paramString += ParamNames[i] + ": " + elite[i] + ", ";
         }
         Debug.Log(paramString);
+
+        // Save best fitnesses to csv file
+        string csv = "Generation,Fitness,HPFitness,ManaFitness,SurviveReward,RoundRewards,WinReward\n";
+        for (int i = 0; i < bestFitnesses.Length; i++)
+        {
+            csv += i + "," + string.Join(",", bestFitnesses[i]) + "\n";
+        }
+        System.IO.File.WriteAllText("Assets/Scripts/BestFitnesses.csv", csv);
         
         // SaveIndividual(elite,"Assets/Scripts/Entity/EliteParam.json");
         // elite=LoadIndividual("Assets/Scripts/Entity/EliteParam.json");
@@ -264,9 +274,9 @@ public class Evolution : MonoBehaviour
         float fitness = 0f;
         float hpFitness = 0f;
         float manaFitness = 0f;
-        float deathPenalty = 0f;
-        float roundPenalty = 0f;
-        float losePenalty = 0f;
+        float surviveReward = 0f;
+        float roundReward = 0f;
+        float winReward = 0f;
 
         for (int i = 0; i < stats.Count; i++)
         {
@@ -275,36 +285,36 @@ public class Evolution : MonoBehaviour
                 hpFitness += (1-stats[i][j])/3;  
                 manaFitness += (1-stats[i][j+1])/3;             
             }
-            //Death penalty
-            if (stats[i][0] == 0)
+            //Survive reward
+            if (stats[i][0] != 0)
             {
-                deathPenalty -= PlayerDeathWeight;
+                surviveReward += PlayerSurviveWeight;
             }
-            if (stats[i][2] == 0)
+            if (stats[i][2] != 0)
             {
-                deathPenalty -= PlayerDeathWeight;
+                surviveReward += PlayerSurviveWeight;
             }
-            if (stats[i][4] == 0)
+            if (stats[i][4] != 0)
             {
-                deathPenalty -= PlayerDeathWeight;
+                surviveReward += PlayerSurviveWeight;
             }
-            //Lose weight penalty
-            if (stats[i][6] != 0)
+            //Win reward
+            if (stats[i][6] == 0)
             {
-                losePenalty =  -PlayerLoseWeight;
+                winReward += PlayerWinWeight;
             }
-            //Round penalty as squared difference from target rounds
-            roundPenalty += -Mathf.Pow(stats[i][7]-targetRounds,2);
+            //Round reward
+            roundReward += Mathf.Max(1-Mathf.Pow(stats[i][7]-targetRounds,2)/Mathf.Pow(targetRounds,2),0);
 
             
         }
         hpFitness = HPWeight*hpFitness / stats.Count;
         manaFitness = ManaWeight*manaFitness / stats.Count;
-        deathPenalty = deathPenalty / stats.Count;
-        roundPenalty = roundPenalty / stats.Count;
-        losePenalty = losePenalty / stats.Count;
-        fitness = baseFitness + hpFitness + manaFitness + deathPenalty + roundPenalty + losePenalty;
-        return new float[] {Mathf.Max(fitness,0),hpFitness,manaFitness,deathPenalty,roundPenalty,losePenalty};
+        surviveReward = surviveReward / stats.Count;
+        roundReward = RoundWeight*roundReward / stats.Count;
+        winReward = winReward / stats.Count;
+        fitness = baseFitness + hpFitness + manaFitness + surviveReward + roundReward + winReward;
+        return new float[] {Mathf.Max(fitness,0),hpFitness,manaFitness,surviveReward,roundReward,winReward};
     }
 
     // Select a parent for crossover
