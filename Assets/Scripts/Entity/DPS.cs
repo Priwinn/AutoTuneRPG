@@ -39,8 +39,42 @@ public class DPS : Entity
     public DPS(DPSParam param, bool printMode= false) : base(param.maxHP, param.maxMana, printMode)
     {
         dpsParam = param;
+        abilities.Add(InitBasicAttack());
+        abilities.Add(InitAoEAttackBuff());
+        abilities.Add(InitSingleDamage());
     }
 
+    private Ability InitBasicAttack()
+    {
+        Ability basicAttack = new Ability();
+        basicAttack.abilityName = "DPSBasicAttack";
+        basicAttack.damage = dpsParam.basicDamage;
+        basicAttack.hitCount = 1;
+        return basicAttack;
+    }
+
+    private Ability InitSingleDamage()
+    {
+        Ability singleDamage = new Ability();
+        singleDamage.abilityName = "DPSSIngleDamage";
+        singleDamage.manaCost = dpsParam.singleDamageCost;
+        singleDamage.damage = dpsParam.singleDamage;
+        singleDamage.hitCount = 1;
+        return singleDamage;
+    }
+
+    private Ability InitAoEAttackBuff()
+    {
+        Ability aoeAttackBuff = new Ability();
+        aoeAttackBuff.abilityName = "DPSAoEAttackBuff";
+        aoeAttackBuff.manaCost = dpsParam.attackBuffCost;
+        aoeAttackBuff.attackBuff = dpsParam.attackBuff;
+        aoeAttackBuff.buffAoE = true;
+        aoeAttackBuff.duration = dpsParam.attackBuffDuration;
+        return aoeAttackBuff;
+    }
+
+    /*
     public void BasicAttack(Entity target)
     {
         int damage = target.Damage(dpsParam.basicDamage + attackBuff - attackDebuff);
@@ -98,4 +132,5 @@ public class DPS : Entity
             Debug.Log("DPS Attack " + target + " for " + damage + " damage using " + dpsParam.singleDamageCost + " mana.");
         }
     }
+    */
 }

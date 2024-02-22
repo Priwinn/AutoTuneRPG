@@ -41,8 +41,43 @@ public class Tank : Entity
     public Tank(TankParam param, bool printMode = false) : base(param.maxHP, param.maxMana, printMode)
     {
         tankParam = param;
+        abilities.Add(InitBasicAttack());
+        abilities.Add(InitTaunt());
+        abilities.Add(InitAttackAndHeal());
     }
 
+    private Ability InitBasicAttack()
+    {
+        Ability basicAttack = new Ability();
+        basicAttack.abilityName = "TankBasicAttack";
+        basicAttack.damage = tankParam.basicDamage;
+        basicAttack.hitCount = 1;
+        return basicAttack;
+    }
+
+    private Ability InitTaunt()
+    {
+        Ability taunt = new Ability();
+        taunt.abilityName = "TankTaunt";
+        taunt.manaCost = tankParam.tauntCost;
+        taunt.taunt = true;
+        taunt.attackDebuff = tankParam.tauntAttackDebuff;
+        taunt.duration = tankParam.tauntDuration;
+        return taunt;
+    }
+
+    private Ability InitAttackAndHeal()
+    {
+        Ability attackAndHeal = new Ability();
+        attackAndHeal.abilityName = "TankAttackAndHeal";
+        attackAndHeal.manaCost = tankParam.singleCost;
+        attackAndHeal.damage = tankParam.singleDamage;
+        attackAndHeal.hitCount = 1;
+        attackAndHeal.heal = tankParam.singleHeal;
+        return attackAndHeal;
+    }
+
+    /*
     public void BasicAttack(Entity target)
     {
         int damage = target.Damage(tankParam.basicDamage + attackBuff - attackBuff);
@@ -103,4 +138,5 @@ public class Tank : Entity
             Debug.Log("Tank Attack " + target + " for " + damage + " damage and heal for " + heal + " HP using " + tankParam.tauntCost + " mana.");
         }
     }
+    */
 }

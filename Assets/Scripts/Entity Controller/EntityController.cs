@@ -38,6 +38,7 @@ public abstract class EntityController
     {
         if (entity == null)
         {
+            Debug.Log(this + " entity is NULL WHAT THE FUCK AAAAAAAAAA");
             return;
         }
         entity.ResolveTurn();

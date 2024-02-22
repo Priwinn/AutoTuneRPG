@@ -2,68 +2,81 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class ActionManager
+public static class AbilityManager
 {
     public static bool printMode = false;
 
-    public static bool ExecuteAction(Action action, EntityController caster, Entity target = null)
+    public static bool ExecuteAction(Ability ability, EntityController caster, Entity target = null)
     {
         Entity casterEntity = caster.GetEntity();
-        // Handle cost
-        if (!casterEntity.ResolveCost(action.hpCost, action.manaCost))
+        if (printMode)
         {
+            Debug.Log(casterEntity + " cast " + ability.abilityName);
+        }
+        // Handle cost
+        if (!casterEntity.ResolveCost(ability.manaCost, ability.hpCost))
+        {
+            if (printMode)
+            {
+                Debug.Log("BUT " + casterEntity + " HAVE NO MANA!!");
+            }
             return false;
         }
 
         if (casterEntity.IsTaunted())
         {
-            target = casterEntity.GetTauntTarget();
+            Entity tauntTarget = casterEntity.GetTauntTarget();
+            if (tauntTarget != null && tauntTarget.GetHP() > 0)
+            {
+                target = tauntTarget;
+            }
         }
 
         // Handle damage
-        HandleDamage(action, caster, target);
+        HandleDamage(ability, caster, target);
 
         // Handle Heal
-        HandleHeal(action, caster, target);
+        HandleHeal(ability, caster, target);
 
         //Handle Mana recover
-        HandleRecoverMana(action, caster, target);
+        HandleRecoverMana(ability, caster, target);
 
-        if (action.duration <= 0)
+        if (ability.duration <= 0)
         {
             return true;
         }
         // Handle Attack buff
-        HandleAttackBuff(action, caster, target);
+        HandleAttackBuff(ability, caster, target);
 
         // Handle Defense buff
-        HandleDefenseBuff(action, caster, target);
+        HandleDefenseBuff(ability, caster, target);
 
         // Handle Attack debuff
-        HandleAttackDebuff(action, caster, target);
+        HandleAttackDebuff(ability, caster, target);
 
         // Handle Defense debuff
-        HandleDefenseDebuff(action, caster, target);
+        HandleDefenseDebuff(ability, caster, target);
 
         // Handle taunt
-        HandleTaunt(action, caster, target);
+        HandleTaunt(ability, caster, target);
 
         // Handle stun
-        HandleStun(action, caster, target);
+        HandleStun(ability, caster, target);
 
         return true;
     }
 
-    private static void HandleDamage(Action action, EntityController caster, Entity target)
+    private static void HandleDamage(Ability ability, EntityController caster, Entity target)
     {
         Entity casterEntity = caster.GetEntity();
-        int hitCount = action.hitCount;
+        int hitCount = ability.hitCount;
         if (hitCount > 0)
         {
             string targetName;
-            int damage = action.damage + casterEntity.GetAttackBuff() - casterEntity.GetAttackDebuff()
-                        + Bool2Int(target.IsStunned()) * action.stunExtraDamage + Bool2Int(target.IsTaunted()) * action.tauntExtraDamage;
-            if (action.damageAll)
+            int damage = ability.damage + casterEntity.GetAttackBuff() - casterEntity.GetAttackDebuff();
+                        //+ Bool2Int(target.IsStunned()) * ability.stunExtraDamage + Bool2Int(target.IsTaunted()) * ability.tauntExtraDamage;
+            damage = Mathf.Max(damage, 0);
+            if (ability.damageAll)
             {
                 targetName = "ALL";
                 if (printMode)
@@ -73,7 +86,7 @@ public static class ActionManager
                 Damage(damage, hitCount, caster.GetParty());
                 Damage(damage, hitCount, caster.GetTargetParty());
             }
-            else if (action.damageAoE)
+            else if (ability.damageAoE)
             {
                 targetName = caster.GetTargetParty().partyName;
                 if (printMode)
@@ -96,7 +109,7 @@ public static class ActionManager
         }
     }
 
-    private static void HandleHeal(Action action, EntityController caster, Entity target)
+    private static void HandleHeal(Ability action, EntityController caster, Entity target)
     {
         Entity casterEntity = caster.GetEntity();
         if (action.heal > 0)
@@ -105,10 +118,10 @@ public static class ActionManager
             int heal = action.heal;
             if (action.healAoE)
             {
-                targetName = caster.GetTargetParty().partyName;
+                targetName = caster.GetParty().partyName;
                 if (printMode)
                 {
-                    Debug.Log(caster + " heals " + targetName + " for " + heal + " heal");
+                    Debug.Log(casterEntity + " heals " + targetName + " for " + heal + " heal");
                 }
                 caster.GetParty().AOEHeal(heal);
             }
@@ -119,7 +132,7 @@ public static class ActionManager
                     targetName = target.ToString();
                     if (printMode)
                     {
-                        Debug.Log(caster + " heals " + targetName + " for " + heal + " heal");
+                        Debug.Log(casterEntity + " heals " + targetName + " for " + heal + " heal");
                     }
                     target.Heal(heal);
                 }
@@ -128,7 +141,7 @@ public static class ActionManager
                     targetName = "Self";
                     if (printMode)
                     {
-                        Debug.Log(caster + " heals " + targetName + " for " + heal + " heal");
+                        Debug.Log(casterEntity + " heals " + targetName + " for " + heal + " heal");
                     }
                     casterEntity.Heal(heal);
                 }
@@ -136,7 +149,7 @@ public static class ActionManager
         }
     }
 
-    private static void HandleRecoverMana(Action action, EntityController caster, Entity target)
+    private static void HandleRecoverMana(Ability action, EntityController caster, Entity target)
     {
         Entity casterEntity = caster.GetEntity();
         if (action.manaRecover > 0)
@@ -144,7 +157,7 @@ public static class ActionManager
             string targetName;
             if (action.manaRecoverAoE)
             {
-                targetName = caster.GetTargetParty().partyName;
+                targetName = caster.GetParty().partyName;
                 caster.GetParty().AoERecoverMana(action.manaRecover);
             }
             else
@@ -162,26 +175,26 @@ public static class ActionManager
             }
             if (printMode)
             {
-                Debug.Log(caster + " recover " + action.manaRecover + " mana to " + targetName);
+                Debug.Log(casterEntity + " recover " + action.manaRecover + " mana to " + targetName);
             }
         }
     }
 
-    private static void HandleAttackBuff(Action action, EntityController caster, Entity target)
+    private static void HandleAttackBuff(Ability action, EntityController caster, Entity target)
     {
         Entity casterEntity = caster.GetEntity();
         if (action.attackBuff > 0)
         {
             string targetName;
-            if (action.attackBuffAll)
+            if (action.buffAll)
             {
                 targetName = "ALL";
                 caster.GetParty().AOEAttackBuff(action.attackBuff, action.duration);
                 caster.GetTargetParty().AOEAttackBuff(action.attackBuff, action.duration);
             }
-            else if (action.attackBuffAoE)
+            else if (action.buffAoE)
             {
-                targetName = caster.GetTargetParty().partyName;
+                targetName = caster.GetParty().partyName;
                 caster.GetParty().AOEAttackBuff(action.attackBuff, action.duration);
             }
             else
@@ -199,26 +212,26 @@ public static class ActionManager
             }
             if (printMode)
             {
-                Debug.Log(caster + " buff " + action.attackBuff + " Attack to " + targetName + " for " + action.duration + " turns.");
+                Debug.Log(casterEntity + " buff " + action.attackBuff + " Attack to " + targetName + " for " + action.duration + " turns.");
             }
         }
     }
 
-    private static void HandleDefenseBuff(Action action, EntityController caster, Entity target)
+    private static void HandleDefenseBuff(Ability action, EntityController caster, Entity target)
     {
         Entity casterEntity = caster.GetEntity();
         if (action.defenseBuff > 0)
         {
             string targetName;
-            if (action.defenseBuffAll)
+            if (action.buffAll)
             {
                 targetName = "ALL";
                 caster.GetParty().AOEDefenseBuff(action.defenseBuff, action.duration);
                 caster.GetTargetParty().AOEDefenseBuff(action.defenseBuff, action.duration);
             }
-            else if (action.defenseBuffAoE)
+            else if (action.buffAoE)
             {
-                targetName = caster.GetTargetParty().partyName;
+                targetName = caster.GetParty().partyName;
                 caster.GetParty().AOEDefenseBuff(action.defenseBuff, action.duration);
             }
             else
@@ -236,26 +249,26 @@ public static class ActionManager
             }
             if (printMode)
             {
-                Debug.Log(caster + " buff " + action.defenseBuff + " Defense to " + targetName + " for " + action.duration + " turns.");
+                Debug.Log(casterEntity + " buff " + action.defenseBuff + " Defense to " + targetName + " for " + action.duration + " turns.");
             }
         }
     }
 
-    private static void HandleAttackDebuff(Action action, EntityController caster, Entity target)
+    private static void HandleAttackDebuff(Ability action, EntityController caster, Entity target)
     {
         if (action.attackDebuff > 0)
         {
             string targetName;
-            if (action.attackDebuffAll)
+            if (action.debuffAll)
             {
                 targetName = "ALL";
                 caster.GetParty().AOEAttackDebuff(action.attackDebuff, action.duration);
                 caster.GetTargetParty().AOEAttackDebuff(action.attackDebuff, action.duration);
             }
-            else if (action.attackDebuffAoE)
+            else if (action.debuffAoE)
             {
-                targetName = caster.GetParty().partyName;
-                caster.GetParty().AOEAttackDebuff(action.attackDebuff, action.duration);
+                targetName = caster.GetTargetParty().partyName;
+                caster.GetTargetParty().AOEAttackDebuff(action.attackDebuff, action.duration);
             }
             else
             {
@@ -265,26 +278,26 @@ public static class ActionManager
             }
             if (printMode)
             {
-                Debug.Log(caster + " debuff " + action.attackDebuff + " Attack to " + targetName + " for " + action.duration + " turns.");
+                Debug.Log(caster.GetEntity() + " debuff " + action.attackDebuff + " Attack to " + targetName + " for " + action.duration + " turns.");
             }
         }
     }
 
-    private static void HandleDefenseDebuff(Action action, EntityController caster, Entity target)
+    private static void HandleDefenseDebuff(Ability action, EntityController caster, Entity target)
     {
         if (action.defenseDebuff > 0)
         {
             string targetName;
-            if (action.defenseDebuffAll)
+            if (action.debuffAll)
             {
                 targetName = "ALL";
                 caster.GetParty().AOEDefenseDebuff(action.defenseDebuff, action.duration);
                 caster.GetTargetParty().AOEDefenseDebuff(action.defenseDebuff, action.duration);
             }
-            else if (action.defenseDebuffAoE)
+            else if (action.debuffAoE)
             {
-                targetName = caster.GetParty().partyName;
-                caster.GetParty().AOEDefenseDebuff(action.defenseDebuff, action.duration);
+                targetName = caster.GetTargetParty().partyName;
+                caster.GetTargetParty().AOEDefenseDebuff(action.defenseDebuff, action.duration);
             }
             else
             {
@@ -294,12 +307,12 @@ public static class ActionManager
             }
             if (printMode)
             {
-                Debug.Log(caster + " debuff " + action.defenseDebuff + " Defense to " + targetName + " for " + action.duration + " turns.");
+                Debug.Log(caster.GetEntity() + " debuff " + action.defenseDebuff + " Defense to " + targetName + " for " + action.duration + " turns.");
             }
         }
     }
 
-    private static void HandleTaunt(Action action, EntityController caster, Entity target)
+    private static void HandleTaunt(Ability action, EntityController caster, Entity target)
     {
         Entity casterEntity = caster.GetEntity();
         if (action.taunt == true)
@@ -318,13 +331,13 @@ public static class ActionManager
             }
             if (printMode)
             {
-                Debug.Log(caster + " taunt " + targetName + " for " + action.duration + " turns.");
+                Debug.Log(casterEntity + " taunt " + targetName + " for " + action.duration + " turns.");
             }
             
         }
     }
 
-    private static void HandleStun(Action action, EntityController caster, Entity target)
+    private static void HandleStun(Ability action, EntityController caster, Entity target)
     {
         if (action.stun == true)
         {
@@ -342,7 +355,7 @@ public static class ActionManager
             }
             if (printMode)
             {
-                Debug.Log(caster + " stun " + targetName + " for " + action.duration + " turns.");
+                Debug.Log(caster.GetEntity() + " stun " + targetName + " for " + action.duration + " turns.");
             }
         }
     }

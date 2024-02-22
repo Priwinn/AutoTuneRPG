@@ -37,8 +37,40 @@ public class Healer : Entity
     public Healer(HealerParam param, bool printMode=false) : base(param.maxHP, param.maxMana, printMode)
     {
         healerParam = param;
+        abilities.Add(InitBasicAttack());
+        abilities.Add(InitSingleHeal());
+        abilities.Add(InitAoEHeal());
     }
 
+    private Ability InitBasicAttack()
+    {
+        Ability basicAttack = new Ability();
+        basicAttack.abilityName = "HealerBasicAttack";
+        basicAttack.damage = healerParam.basicDamage;
+        basicAttack.hitCount = 1;
+        return basicAttack;
+    }
+
+    private Ability InitSingleHeal()
+    {
+        Ability singleHeal = new Ability();
+        singleHeal.abilityName = "HealerSingleHeal";
+        singleHeal.manaCost = healerParam.singleHealCost;
+        singleHeal.heal = healerParam.singleHeal;
+        return singleHeal;
+    }
+
+    private Ability InitAoEHeal()
+    {
+        Ability aoeHeal = new Ability();
+        aoeHeal.abilityName = "HealerAoEHeal";
+        aoeHeal.manaCost = healerParam.aoeHealCost;
+        aoeHeal.heal = healerParam.aoeHeal;
+        aoeHeal.healAoE = true;
+        return aoeHeal;
+    }
+
+    /*
     public void BasicAttack(Entity target)
     {
         int damage = target.Damage(healerParam.basicDamage + attackBuff - attackDebuff);
@@ -47,7 +79,6 @@ public class Healer : Entity
             Debug.Log("Healer BasicAttack " + target + " for " + damage + " damage!");
         }
     }
-
     private bool CheckCost(int cost)
     {
         if (mana < cost)
@@ -96,4 +127,7 @@ public class Healer : Entity
             Debug.Log("Healer AoE heal party " + healerParam.aoeHeal + " HP using " + healerParam.aoeHealCost + " mana.");
         }
     }
+    */
+
+
 }

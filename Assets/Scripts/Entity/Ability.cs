@@ -2,14 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Action
+public class Ability
 {
+    public string abilityName;
+
     public int manaCost = 0;
     public int hpCost = 0;
 
-    // TODO consider fewer AoE variable? like this
-    // public bool debuffAoE = false;   // debuff include stun and taunt
-    // public bool buffAoE = false;     // buff include heal and mana recovery
+    public bool buffAoE = false;
+    public bool buffAll = false;
+    public bool debuffAoE = false;
+    public bool debuffAll = false;
 
     public int damage = 0;
     public bool damageAoE = false;
@@ -27,24 +30,14 @@ public class Action
 
     //TODO
     public int hitCountBuff = 0;
-    public bool hitCountBuffAoE = false;
-    public bool hitCountBuffAll = false;
 
     public int attackBuff = 0;
-    public bool attackBuffAoE = false;
-    public bool attackBuffAll = false;
 
     public int attackDebuff = 0;
-    public bool attackDebuffAoE = false;
-    public bool attackDebuffAll = false;
 
     public int defenseBuff = 0;
-    public bool defenseBuffAoE = false;
-    public bool defenseBuffAll = false;
 
     public int defenseDebuff = 0;
-    public bool defenseDebuffAoE = false;
-    public bool defenseDebuffAll = false;
 
     public bool taunt = false;
     public bool tauntAoE = false;

@@ -29,17 +29,14 @@ public class BossAI : EntityController
 
     public override void Execute()
     {
+        List<Ability> abilityList = entity.GetAbilityList();
         if (Random.Range(0, 100) <= ((Boss)entity).bossParam.aoeProbability)
         {
-            ((Boss)entity).AoEAttack(targetParty);
-        }
-        else if (entity.IsTaunted())
-        {
-            ((Boss)entity).SingleTarget(entity.GetTauntTarget());
+            AbilityManager.ExecuteAction(abilityList[1], this); // AOE
         }
         else
         {
-            ((Boss)entity).SingleTarget(SelectTarget());
+            AbilityManager.ExecuteAction(abilityList[0], this, SelectTarget()); // Single
         }
     }
 }

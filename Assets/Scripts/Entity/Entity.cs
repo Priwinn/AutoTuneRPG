@@ -8,6 +8,8 @@ public abstract class Entity
     protected Entity defaultTarget;
     protected Entity tauntTarget;
 
+    protected List<Ability> abilities;
+
     protected int HP;
     protected int maxHP;
 
@@ -35,6 +37,12 @@ public abstract class Entity
         this.maxHP = maxHP; HP = maxHP;
         this.maxMana = maxMana; mana = maxMana;
         this.printMode = printMode;
+        this.abilities = new List<Ability>();
+    }
+
+    public List<Ability> GetAbilityList()
+    {
+        return abilities;
     }
 
     public Entity GetDefaultTarget()
@@ -102,6 +110,7 @@ public abstract class Entity
 
     public bool ResolveCost(int manaCost, int hpCost)
     {
+        //Debug.Log(this + " hpCost=" + hpCost + " manaCost=" + manaCost);
         if (HP < hpCost || mana < manaCost)
         {
             return false;
@@ -123,7 +132,7 @@ public abstract class Entity
 
     public int GetAttackDebuff()
     {
-        return attackBuff;
+        return attackDebuff;
     }
 
     public int GetAttackDebuffDuration()
@@ -178,6 +187,7 @@ public abstract class Entity
         if (printMode)
         {
             //TODO when defense buff and debuff is added
+            Debug.Log(this + " is hit for " + damage + " damage??");
         }
         if (HP <= 0)
         {
@@ -205,25 +215,25 @@ public abstract class Entity
 
     virtual public void BuffAttack(int buff, int duration)
     {
-        attackBuff += buff;
+        attackBuff = buff;
         attackBuffDuration = duration;
     }
 
     virtual public void DebuffAttack(int debuff, int duration)
     {
-        attackDebuff += debuff;
+        attackDebuff = debuff;
         attackDebuffDuration = duration;
     }
 
     virtual public void BuffDefense(int buff, int duration)
     {
-        defenseBuff += buff;
+        defenseBuff = buff;
         defenseBuffDuration = duration;
     }
 
     virtual public void DebuffDefense(int debuff, int duration)
     {
-        defenseDebuff += debuff;
+        defenseDebuff = debuff;
         defenseDebuffDuration = duration;
     }
 
