@@ -27,8 +27,11 @@ public class Boss : Entity
     public Boss(BossParam param, bool printMode=false): base(param.maxHP, 0, printMode)
     {
         bossParam = param;
+        abilities.Add(InitSingleTarget());
+        abilities.Add(InitAoEAttack());
     }
 
+    /*
     public void SingleTarget(Entity target)
     {
         if (isTaunted)
@@ -50,13 +53,36 @@ public class Boss : Entity
         }
 
     }
+    */
 
+    private Ability InitSingleTarget()
+    {
+        Ability singleTarget = new Ability();
+        singleTarget.abilityName = "BossSingleTarget";
+        singleTarget.damage = bossParam.singleDamage;
+        singleTarget.hitCount = 1;
+        return singleTarget;
+    }
+
+    /*
     public void AoEAttack(Party party)
     {
-        party.AOEDamage(bossParam.aoeDamage + attackBuff - attackDebuff);
+        int damage = bossParam.aoeDamage + attackBuff - attackDebuff;
+        party.AOEDamage(damage);
         if (printMode)
         {
-            Debug.Log("Boss AoE Attack for " + bossParam.aoeDamage + " damage!");
+            Debug.Log("Boss AoE Attack for " + damage + " damage!");
         }
+    }
+    */
+
+    private Ability InitAoEAttack()
+    {
+        Ability aoeAttack = new Ability();
+        aoeAttack.abilityName = "BossAoEAttack";
+        aoeAttack.damage = bossParam.aoeDamage;
+        aoeAttack.hitCount = 1;
+        aoeAttack.damageAoE = true;
+        return aoeAttack;
     }
 }

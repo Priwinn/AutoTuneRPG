@@ -15,6 +15,7 @@ public class HealerAI : EntityController
 
     public override void Execute()
     {
+        List<Ability> abilityList = entity.GetAbilityList();
         Entity healTarget = null;
         int count = 0;
 
@@ -29,18 +30,18 @@ public class HealerAI : EntityController
                 healTarget = member;
             }
         }
-
+        bool success = false;
         if (count >= AoEThresholdCount)
         {
-            ((Healer)entity).AOEHeal(party);
+            success = AbilityManager.ExecuteAction(abilityList[2], this); // AOE Heal
         }
-        else if (healTarget != null)
+        if (healTarget != null && !success)
         {
-            ((Healer)entity).SingleHeal(healTarget);
+            success = AbilityManager.ExecuteAction(abilityList[1], this, healTarget);     // Single heal
         }
-        else
+        if (!success)
         {
-            ((Healer)entity).BasicAttack(entity.GetDefaultTarget());
+            AbilityManager.ExecuteAction(abilityList[0], this, entity.GetDefaultTarget());  // Basic Attack
         }
     }
 }

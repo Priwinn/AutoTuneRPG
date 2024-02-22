@@ -18,6 +18,11 @@ public abstract class EntityController
         party = p;
     }
 
+    public Party GetTargetParty()
+    {
+        return targetParty;
+    }
+
     public void SetTargetParty(Party p)
     {
         targetParty = p;
@@ -33,6 +38,7 @@ public abstract class EntityController
     {
         if (entity == null)
         {
+            Debug.Log(this + " entity is NULL WHAT THE FUCK AAAAAAAAAA");
             return;
         }
         entity.ResolveTurn();

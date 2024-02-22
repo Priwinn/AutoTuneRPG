@@ -11,13 +11,20 @@ public class DPSAI : EntityController
 
     public override void Execute()
     {
+        List<Ability> abilityList = entity.GetAbilityList();
+        bool success = false;
+
         if (entity.GetAttackBuffDuration() <= 0)
         {
-            ((DPS)entity).AOEAttackBuff(party);
+            success = AbilityManager.ExecuteAction(abilityList[1], this);   // AOE Attack Buff
         }
-        else
+        if (!success)
         {
-            ((DPS)entity).SingleDamage(entity.GetDefaultTarget());
+            success = AbilityManager.ExecuteAction(abilityList[2], this, entity.GetDefaultTarget());    // Single Damage
+        }
+        if (!success)
+        {
+            AbilityManager.ExecuteAction(abilityList[0], this, entity.GetDefaultTarget());              // Basic Attack
         }
     }
 }

@@ -21,6 +21,7 @@ public class Game
     {
         this.gameParams = gameParams;
         this.printMode = printMode;
+        AbilityManager.printMode = printMode;
         gameStatisticsHistory = new List<float[]>();
     }
 
@@ -31,7 +32,7 @@ public class Game
 
     private void InitGame()
     {
-        playerParty = new Party(printMode);
+        playerParty = new Party("Player Party", printMode);
         dps = new DPS(gameParams.dpsParam, printMode);
         tank = new Tank(gameParams.tankParam, printMode);
         healer = new Healer(gameParams.healerParam, printMode);
@@ -39,7 +40,7 @@ public class Game
         playerParty.Add(new TankAI(tank));
         playerParty.Add(new HealerAI(healer));
 
-        bossParty = new Party(printMode);
+        bossParty = new Party("Boss Party", printMode);
         boss = new Boss(gameParams.bossParam, printMode);
         bossParty.Add(new BossAI(boss));
         bossParty.SetTargetParty(playerParty);
@@ -66,9 +67,15 @@ public class Game
         int turn_count = 0;
         while (playerParty.IsAlive() && bossParty.IsAlive())
         {
+            if (turn_count > 100)
+            {
+                Debug.Log("WHY IS IT STILL GOING??");
+                break;
+            }
             turn_count++;
             if (printMode)
             {
+                Debug.Log("Turn " + turn_count);
                 Debug.Log("Player turn");
             }
             playerParty.Execute();
@@ -94,6 +101,7 @@ public class Game
         }
         if (!printMode)
         {
+            //Debug.Log(turn_count);
             return turn_count;
         }
         if (playerParty.IsAlive())
@@ -114,11 +122,13 @@ public class Game
     private void printGameState()
     {
         //Debug.Log("Player Party:");
+        //Debug.Log(playerParty.membersEntity.Count);
         foreach (Entity entity in playerParty.membersEntity)
         {
             Debug.Log(entity.EntityStateString());
         }
         //Debug.Log("Boss Party:");
+        //Debug.Log(bossParty.membersEntity);
         foreach (Entity entity in bossParty.membersEntity)
         {
             Debug.Log(entity.EntityStateString());
